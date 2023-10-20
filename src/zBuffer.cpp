@@ -34,6 +34,12 @@ void BufferManager::write_page(PAGE_ID page_id,
   set_dirty(frame_id);
 }
 
+int BufferManager::get_free_frames_id(){
+  //wait for modify
+  //get free frame id from free list
+  return DEF_BUF_SIZE - free_frames_num;
+}
+
 int BufferManager::fix_page(PAGE_ID page_id) {
   return fix_page(false, page_id);
 }
@@ -81,7 +87,7 @@ void BufferManager::fix_new_page(const Frame::sptr &frame) {
   if (free_frames_num == 0) {
     frame_id = select_victim();
   } else {
-    frame_id = DEF_BUF_SIZE - free_frames_num;
+    frame_id = get_free_frames_id();
     free_frames_num--;
   }
   memcpy((buffer + frame_id)->field, frame->field, FRAME_SIZE);
@@ -133,6 +139,8 @@ void BufferManager::clean_buffer() {
 }
 
 void BufferManager::set_dirty(int frame_id) {
+  //wait for modify
+  //add frame id to cluster
   PAGE_ID page_id = get_page_id(frame_id);
   BCB *bcb = get_bcb(page_id);
   bcb->set_dirty();

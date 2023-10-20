@@ -73,13 +73,23 @@ int ZNSController::write_page_p(PAGE_ID page_id, Frame *frm) {
     return 0;
 }
 
-/*int ZNSController::write_dirtyzone_p(unsigned long long page_id, Frame *frm) {
-  unsigned int page_addr = get_page_addr(page_id);
-  seek(page_addr);
-  fwrite(frm->field, sizeof(char), FRAME_SIZE, zns_file);
-  inc_io_count();
-  return 0;
-}*/
+int ZNSController::write_cluster_p(PAGE_ID page_id, Frame *frm) {
+    ZONE_ID zone_write = select_write_zone(page_id);
+    off_st wp_write = get_zone_wp(zone_write);
+    set_page_addr(page_id, wp_write);
+    inc_io_count();
+    return 0;
+}
+
+int ZNSController::write_cluster_a(PAGE_ID page_id, Frame *frm) {
+    ZONE_ID zone_write = select_write_zone(page_id);
+    off_st wp_write = get_zone_wp(zone_write);
+    set_page_addr(page_id, wp_write);
+    struct nvme_zns_append_args *write_cluster;
+    //nvme_zns_append();
+    inc_io_count();
+    return 0;
+}
 
 ZONE_ID ZNSController::select_write_zone(PAGE_ID page_id) {
     ZONE_ID zone_ret = (ZONE_ID)(page_id % 10);

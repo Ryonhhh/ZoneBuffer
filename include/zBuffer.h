@@ -24,6 +24,8 @@ class BufferManager {
 
   void write_page(PAGE_ID page_id, const Frame::sptr &frame);
 
+  int get_free_frames_id();
+
   int fix_page(PAGE_ID page_id);
 
   int fix_page(bool is_write, PAGE_ID page_id);

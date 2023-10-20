@@ -23,7 +23,9 @@ class ZNSController {
 
   int write_page_p(PAGE_ID page_id, Frame *frm);
 
-  int write_dirtyzone_p(PAGE_ID page_id, Frame *frm);
+  int write_cluster_p(PAGE_ID page_id, Frame *frm);
+   
+  int write_cluster_a(PAGE_ID page_id, Frame *frm);
 
   PAGE_ID create_new_page(Frame *frm);
 
