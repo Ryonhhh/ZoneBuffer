@@ -1,10 +1,10 @@
-#ifndef ADB_PROJECT_BUFFER_MANAGER_HPP
-#define ADB_PROJECT_BUFFER_MANAGER_HPP
+#ifndef BUFFER_MANAGER_HPP
+#define BUFFER_MANAGER_HPP
 
 #include <list>
 
 #include "common.h"
-#include "zalp.h"
+#include "zalplru.h"
 #include "zController.h"
 
 #define DEF_BUF_SIZE 1024
@@ -23,12 +23,6 @@ class BufferManager {
   Frame::sptr read_page(PAGE_ID page_id);
 
   void write_page(PAGE_ID page_id, const Frame::sptr &frame);
-
-  FRAME_ID fix_page(PAGE_ID page_id);
-
-  FRAME_ID fix_page(bool is_write, PAGE_ID page_id);
-
-  void fix_new_page(const Frame::sptr &frame);
 
   int get_free_frames_num();
 
@@ -50,7 +44,7 @@ class BufferManager {
 
   static int hash_func(PAGE_ID page_id);
 
-  int evict_victim();
+  int select_victim();
 
   void clean_buffer();
 
@@ -70,4 +64,4 @@ class BufferManager {
 };
 }  // namespace zns
 
-#endif  // ADB_PROJECT_BUFFER_MANAGER_HPP
+#endif  // BUFFER_MANAGER_HPP
