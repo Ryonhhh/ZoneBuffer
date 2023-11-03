@@ -52,6 +52,8 @@ class BufferManager {
 
   int evict_victim();
 
+  void write_pages(int cf, std::list<int> *victim_list);
+
   void clean_buffer();
 
   int get_page_id(int frame_id);

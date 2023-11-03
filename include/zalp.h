@@ -22,7 +22,7 @@ class ZALP {
 
     ~ZALP();
 
-    void get_victim(std::list<int> *);
+    int get_victim(std::list<int> *);
 
     FRAME_ID get_free_frame(); 
 

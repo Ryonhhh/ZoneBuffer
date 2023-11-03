@@ -30,8 +30,8 @@ FRAME_ID ZALP::get_free_frame() {
     return free_frame_id;
 }
 
-void ZALP::get_victim(std::list<int>* victim_list) {
-    int max_cluster = 0, max = 0;
+int ZALP::get_victim(std::list<int>* victim_list) {
+    int max_cluster = -1, max = 0;
     for (int i = 0; i < CLUSTER_NUM; i++) {
         if (max < dirty_cluster_list[i]->size()) {
             max = dirty_cluster_list[i]->size();
@@ -49,6 +49,7 @@ void ZALP::get_victim(std::list<int>* victim_list) {
             auto it = (*lru_map)[iter];
             lru_list->erase(it);
         }
+    return max_cluster;
 }
 
 int ZALP::set_dirty(FRAME_ID frame_id, int cf) {

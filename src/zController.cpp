@@ -22,7 +22,7 @@ void ZNSController::init() {
     zone_size = info->zone_size;
     zone_number = info->nr_zones;
     ofst = (off_st *)malloc(sizeof(off_st) * zone_number);
-    //wp = (off_st *)malloc(sizeof(off_st) * zone_number);
+    // wp = (off_st *)malloc(sizeof(off_st) * zone_number);
     block_per_zone = zone_size / info->pblock_size;
     meta_page = (bool *)malloc(sizeof(bool) * block_per_zone * zone_number);
     pages_num = 0;
@@ -31,7 +31,7 @@ void ZNSController::init() {
     reset_all();
     for (ZONE_ID i = 0; i < zone_number; i++) {
         ofst[i] = i * (off_st)zone_size;
-        //wp[i] = get_zone_wp(i);
+        // wp[i] = get_zone_wp(i);
     }
     for (PAGE_ID i = 0; i < block_per_zone * zone_number; i++) meta_page[i] = 1;
 }
@@ -68,34 +68,42 @@ int ZNSController::write_page_p(PAGE_ID page_id, Frame *frm) {
     set_page_addr(page_id, wp_write);
     int ret = pwrite(dev_id, frm->field, PAGE_SIZE, wp_write);
     assert(ret == PAGE_SIZE);
-    //printf("\nzone_id:%d wp:%lld\n", zone_write, wp_write);
+    // printf("\nzone_id:%d wp:%lld\n", zone_write, wp_write);
     inc_io_count();
     return 0;
 }
 
-int ZNSController::write_cluster_p(PAGE_ID page_id, Frame *frm) {
-    ZONE_ID zone_write = select_write_zone(page_id);
+int ZNSController::write_cluster_p(int cf, char *write_buffer,
+                                   PAGE_ID *page_list, int cluster_size) {
+    ZONE_ID zone_write = select_write_zone(cf);
     off_st wp_write = get_zone_wp(zone_write);
-    set_page_addr(page_id, wp_write);
+    for (int i = 0; i < cluster_size; i++) {
+        set_page_addr(page_list[i], wp_write + i * PAGE_SIZE);
+    }
+    int ret = pwrite(dev_id, write_buffer, PAGE_SIZE * cluster_size, wp_write);
+    assert(ret == PAGE_SIZE * cluster_size);
     inc_io_count();
     return 0;
 }
 
-int ZNSController::write_cluster_a(PAGE_ID page_id, Frame *frm) {
-    ZONE_ID zone_write = select_write_zone(page_id);
+int ZNSController::write_cluster_a(int cf, char *write_buffer,
+                                   PAGE_ID *page_list, int cluster_size) {
+    ZONE_ID zone_write = select_write_zone(cf);
     off_st wp_write = get_zone_wp(zone_write);
-    set_page_addr(page_id, wp_write);
-    struct nvme_zns_append_args *write_cluster;
-    //nvme_zns_append();
+    for (int i = 0; i < cluster_size; i++) {
+        set_page_addr(page_list[i], wp_write + i * PAGE_SIZE);
+    }
+    struct nvme_zns_append_args *nvme_write_buffer;
+    nvme_zns_append(nvme_write_buffer);
     inc_io_count();
     return 0;
 }
 
 ZONE_ID ZNSController::select_write_zone(PAGE_ID page_id) {
     ZONE_ID zone_ret = (ZONE_ID)(page_id % 10);
-    //if (get_zone_cond(zone_ret) != ZBD_ZONE_COND_EXP_OPEN ||
-    //    get_zone_cond(zone_ret) != ZBD_ZONE_COND_IMP_OPEN)
-    //    open_zone(zone_ret);
+    // if (get_zone_cond(zone_ret) != ZBD_ZONE_COND_EXP_OPEN ||
+    //     get_zone_cond(zone_ret) != ZBD_ZONE_COND_IMP_OPEN)
+    //     open_zone(zone_ret);
     return zone_ret;
 }
 
