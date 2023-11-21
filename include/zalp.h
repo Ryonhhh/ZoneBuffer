@@ -32,6 +32,8 @@ class ZALP {
 
     void update(FRAME_ID id);
 
+    void print_list();
+
    private:
     std::list<FRAME_ID> *lru_list;
     std::list<FRAME_ID> *free_list;

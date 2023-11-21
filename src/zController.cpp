@@ -13,7 +13,7 @@ ZNSController::ZNSController() {
 
 ZNSController::~ZNSController() {
     write_log();
-    close_file();
+    //close_file();
 }
 
 void ZNSController::init() {
@@ -22,35 +22,36 @@ void ZNSController::init() {
     zone_size = info->zone_size;
     zone_number = info->nr_zones;
     ofst = (off_st *)malloc(sizeof(off_st) * zone_number);
+    zone_cond = (int *)malloc(sizeof(int) * zone_number);
     // wp = (off_st *)malloc(sizeof(off_st) * zone_number);
     block_per_zone = zone_size / info->pblock_size;
-    meta_page = (bool *)malloc(sizeof(bool) * block_per_zone * zone_number);
+    //meta_page = (bool *)malloc(sizeof(bool) * block_per_zone * zone_number);
     pages_num = 0;
-    pageid2addr =
-        (off_st *)malloc(sizeof(off_st) * block_per_zone * zone_number);
+    pageid2addr = (off_st *)malloc(sizeof(off_st) * block_per_zone * zone_number);
     reset_all();
     for (ZONE_ID i = 0; i < zone_number; i++) {
         ofst[i] = i * (off_st)zone_size;
+        zone_cond[i] = ZBD_ZONE_COND_CLOSED;
         // wp[i] = get_zone_wp(i);
     }
-    for (PAGE_ID i = 0; i < block_per_zone * zone_number; i++) meta_page[i] = 1;
+    //for (PAGE_ID i = 0; i < block_per_zone * zone_number; i++) meta_page[i] = 1;
 }
 
 void ZNSController::write_log() {
     log_file = fopen(LOG_PATH, "w+");
     fseek(log_file, 0, SEEK_SET);
-    fwrite(meta_page, sizeof(bool), MAX_PAGE_NUM, log_file);
+    //fwrite(meta_page, sizeof(bool), MAX_PAGE_NUM, log_file);
     fclose(log_file);
 }
 
-bool ZNSController::is_page_valid(PAGE_ID page_id) {
-    return page_id > 0 && get_valid(page_id);
-}
+//bool ZNSController::is_page_valid(PAGE_ID page_id) {
+    //return page_id > 0 && get_valid(page_id);
+//}
 
 int ZNSController::read_page_p(PAGE_ID page_id, Frame *frm) {
-    if (!is_page_valid(page_id)) {
-        return -1;
-    }
+    //if (!is_page_valid(page_id)) {
+    //    return -1;
+    //}
     off_st page_addr = get_page_addr(page_id);
     char *buf = reinterpret_cast<char *>(memalign(4096, PAGE_SIZE));
     assert(buf != nullptr);
@@ -75,6 +76,7 @@ int ZNSController::write_page_p(PAGE_ID page_id, Frame *frm) {
 
 int ZNSController::write_cluster_p(int cf, char *write_buffer,
                                    PAGE_ID *page_list, int cluster_size) {
+    if(cf == -1) cf = (int)rand() % CLUSTER_NUM;
     ZONE_ID zone_write = select_write_zone(cf);
     off_st wp_write = get_zone_wp(zone_write);
     for (int i = 0; i < cluster_size; i++) {
@@ -88,28 +90,27 @@ int ZNSController::write_cluster_p(int cf, char *write_buffer,
 
 int ZNSController::write_cluster_a(int cf, char *write_buffer,
                                    PAGE_ID *page_list, int cluster_size) {
-    ZONE_ID zone_write = select_write_zone(cf);
+    /*ZONE_ID zone_write = select_write_zone(cf);
     off_st wp_write = get_zone_wp(zone_write);
     for (int i = 0; i < cluster_size; i++) {
         set_page_addr(page_list[i], wp_write + i * PAGE_SIZE);
     }
     struct nvme_zns_append_args *nvme_write_buffer;
     nvme_zns_append(nvme_write_buffer);
-    inc_io_count();
+    inc_io_count();*/
     return 0;
 }
 
 ZONE_ID ZNSController::select_write_zone(PAGE_ID page_id) {
-    ZONE_ID zone_ret = (ZONE_ID)(page_id % 10);
-    // if (get_zone_cond(zone_ret) != ZBD_ZONE_COND_EXP_OPEN ||
-    //     get_zone_cond(zone_ret) != ZBD_ZONE_COND_IMP_OPEN)
-    //     open_zone(zone_ret);
+    ZONE_ID zone_ret = (ZONE_ID)(page_id % CLUSTER_NUM);
+    while (get_zone_cond(zone_ret) == ZBD_ZONE_COND_FULL)
+        zone_ret += CLUSTER_NUM;
     return zone_ret;
 }
 
-PAGE_ID ZNSController::create_new_page(Frame *frm) {
-    PAGE_ID page_id = get_pages_num();
-    inc_pages_num();
+void ZNSController::create_new_page(PAGE_ID page_id, Frame *frm) {
+    //PAGE_ID page_id = get_pages_num();
+    //inc_pages_num();
     /*ZONE_ID zone_write = select_write_zone(page_id);
     set_page_addr(page_id, get_zone_wp(zone_write));
     int ret = pwrite(dev_id, frm->field, PAGE_SIZE, get_zone_wp(zone_write));
@@ -118,7 +119,6 @@ PAGE_ID ZNSController::create_new_page(Frame *frm) {
     inc_io_count();
     */
     write_page_p(page_id, frm);
-    return page_id;
 }
 
 void ZNSController::open_file() {
@@ -201,11 +201,11 @@ void ZNSController::set_page_addr(PAGE_ID page_id, off_st addr) {
     pageid2addr[page_id] = addr;
 }
 
-void ZNSController::set_valid(PAGE_ID page_id, bool is_valid) {
-    meta_page[page_id] = is_valid;
-}
+//void ZNSController::set_valid(PAGE_ID page_id, bool is_valid) {
+//    meta_page[page_id] = is_valid;
+//}
 
-bool ZNSController::get_valid(PAGE_ID page_id) { return meta_page[page_id]; }
+//bool ZNSController::get_valid(PAGE_ID page_id) { return meta_page[page_id]; }
 
 PAGE_ID ZNSController::get_pages_num() { return pages_num; }
 

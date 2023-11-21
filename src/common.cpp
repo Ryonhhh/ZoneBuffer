@@ -6,7 +6,7 @@ namespace zns {
         return page_id;
     }
 
-    int BCB::get_frame_id() const {
+    FRAME_ID BCB::get_frame_id() const {
         return frame_id;
     }
 

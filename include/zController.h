@@ -15,7 +15,7 @@ class ZNSController {
 
   ~ZNSController();
 
-  bool is_page_valid(PAGE_ID page_id);
+  //bool is_page_valid(PAGE_ID page_id);
 
   int read_page_p(PAGE_ID page_id, Frame *frm);
 
@@ -27,12 +27,14 @@ class ZNSController {
    
   int write_cluster_a(int cf,char *write_buffer, PAGE_ID *page_list, int cluster_size);
 
-  PAGE_ID create_new_page(Frame *frm);
+  void create_new_page(PAGE_ID page_id, Frame *frm);
 
   int get_io_count();
 
  private:
   unsigned int zone_number;
+
+  int *zone_cond;
 
   unsigned int zone_size;
 
@@ -86,9 +88,9 @@ class ZNSController {
 
   void set_page_addr(PAGE_ID page_id, off_st addr);
 
-  void set_valid(PAGE_ID page_id, bool is_valid);
+  //void set_valid(PAGE_ID page_id, bool is_valid);
 
-  bool get_valid(PAGE_ID page_id);
+  //bool get_valid(PAGE_ID page_id);
 
   void inc_io_count();
 

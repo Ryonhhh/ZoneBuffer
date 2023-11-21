@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include "/home/wht/libzbd/include/libzbd/zbd.h"
-#include "nvme.h"
+#include "/home/wht/nvme-cli-2.6/nvme.h"
 
 #include <cstdlib>
 #include <iostream>
@@ -25,12 +25,12 @@ struct Frame {
 
 class BCB {
  public:
-  BCB(PAGE_ID page_id, int frame_id)
+  BCB(PAGE_ID page_id, FRAME_ID frame_id)
       : page_id(page_id), frame_id(frame_id), dirty(false){};
 
   PAGE_ID get_page_id() const;
 
-  int get_frame_id() const;
+  FRAME_ID get_frame_id() const;
 
   bool is_dirty() const;
 
@@ -39,8 +39,8 @@ class BCB {
   void unset_dirty();
 
  private:
-  int page_id;
-  int frame_id;
+  PAGE_ID page_id;
+  FRAME_ID frame_id;
   bool dirty;
 };
 
