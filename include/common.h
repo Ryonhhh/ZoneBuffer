@@ -19,6 +19,7 @@ namespace zns {
 struct Frame {
   typedef std::shared_ptr<Frame> sptr;
   char field[FRAME_SIZE] = {};
+  int cluster_flag = 0;
 };
 
 

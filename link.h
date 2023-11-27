@@ -12,7 +12,7 @@
 #define load_db_file "../YCSB-Gen/dataset.dat"
 #define test_db_file "../YCSB-Gen/query.dat"
 #define INSERT 0
-#define DELETE 1
+#define SCAN 1
 #define UPDATE 2
 #define READ 3
 
@@ -27,7 +27,7 @@ class Instruction {
         std::string b = s.substr(sp + 1, s.length());
 
         if (a == std::string("INSERT")) operate = INSERT;
-        if (a == std::string("DELETE")) operate = DELETE;
+        if (a == std::string("SCAN")) operate = SCAN;
         if (a == std::string("UPDATE")) operate = UPDATE;
         if (a == std::string("READ")) operate = READ;
 
@@ -45,8 +45,8 @@ class Instruction {
             case INSERT:
                 opt = "INSERT";
                 break;
-            case DELETE:
-                opt = "DELETE";
+            case SCAN:
+                opt = "SCAN";
                 break;
             case UPDATE:
                 opt = "UPDATE";

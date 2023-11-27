@@ -4,84 +4,110 @@ namespace zns {
 ZALP::ZALP() {
     lru_list = new std::list<int>();
     free_list = new std::list<int>();
-    for (int i = 0; i < CLUSTER_NUM; i++)
-        dirty_cluster_list[i] = new std::list<int>();
+    clean_list = new std::list<int>();
+    dirty_list = new std::list<int>();
 
     lru_map = new std::unordered_map<int, std::list<int>::iterator>();
-    free_map = new std::unordered_map<int, std::list<int>::iterator>();
+    clean_map = new std::unordered_map<int, std::list<int>::iterator>();
     dirty_map = new std::unordered_map<int, std::list<int>::iterator>();
-    for (int i = DEF_BUF_SIZE - 1; i >= 0; i--) {
+    for (int i = 0; i < DEF_BUF_SIZE; i++) {
         free_list->push_back(i);
-        (*free_map)[i] = free_list->end();
     }
 }
 
 ZALP::~ZALP() {
     free(lru_list);
     free(free_list);
+    free(clean_list);
+    free(dirty_list);
     free(lru_map);
-    free(free_map);
-    free(dirty_map);
+    free(clean_map);
 }
 
-FRAME_ID ZALP::get_free_frame() {
-    FRAME_ID free_frame_id = free_list->back();
-    free_list->pop_back();
-    return free_frame_id;
-}
-
-int ZALP::get_victim(std::list<int>* victim_list) {
-    int cf, max_cluster = -1, max = 0;
-    for (int i = 0; i < CLUSTER_NUM; i++) {
-        if (max < (int)dirty_cluster_list[i]->size()) {
-            max = (int)dirty_cluster_list[i]->size();
-            max_cluster = i;
-        }
-    }
-    if (max_cluster == -1) {
-        victim_list->push_back(lru_list->back());
-        free_list->push_back(lru_list->back());
-        lru_list->pop_back();
-        cf = -1;
+FRAME_ID ZALP::get_frame() {
+    FRAME_ID rtframe;
+    if (free_list->size() != 0) {
+        rtframe = free_list->back();
+        free_list->pop_back();
     } else {
-        print_list();
-        for (auto& iter : *dirty_cluster_list[max_cluster]) {
-            victim_list->push_back(iter);
-            free_list->push_back(iter);
-            auto it = (*lru_map)[iter];
-            lru_list->erase(it);
-        }
-        dirty_cluster_list[max_cluster]->clear();
-        cf = max_cluster;
+        rtframe = clean_list->back();
+        clean_list->pop_back();
+        auto iterL = (*lru_map)[rtframe];
+        lru_list->erase(iterL);
     }
-    return cf;
+    return rtframe;
 }
 
-int ZALP::set_dirty(FRAME_ID frame_id, int cf) {
-    dirty_cluster_list[cf]->push_back(frame_id);
-    //printf("%d %ld",cf, dirty_cluster_list[cf]->size());
-    return (dirty_cluster_list[cf]->size() >= cluster_gc_num);
+bool ZALP::is_evict() {
+    if (free_list->size() != 0) return 0;
+    FRAME_ID last_clean = clean_list->back();
+    auto it = (*lru_map)[last_clean];
+    return (std::distance(lru_list->begin(), it) > WORK_REG_SIZE);
 }
 
-void ZALP::push(FRAME_ID id) {
+void ZALP::get_candidate(std::list<int>* candidate_list) {
+    for (auto& iter : *dirty_list) candidate_list->push_back(iter);
+}
+
+void ZALP::set_dirty(FRAME_ID id) {
+    auto iterC = (*clean_map)[id];
+    clean_list->erase(iterC);
+    
+    auto iterL = (*lru_map)[id];
+    if (std::distance(lru_list->begin(), iterL) > WORK_REG_SIZE) {
+        dirty_list->push_back(id);
+        (*dirty_map)[id] = dirty_list->end();
+    }
+}
+
+void ZALP::update_dirty(std::list<int>* victim_list) {
+    for (auto& iter : *victim_list) {
+        auto iterD = (*dirty_map)[iter];
+        dirty_list->erase(iterD);
+        free_list->push_back(iter);
+    }
+}
+
+void ZALP::push(FRAME_ID id, bool is_dirty) {
     lru_list->push_front(id);
     (*lru_map)[id] = lru_list->begin();
+
+    if (!is_dirty) {
+        clean_list->push_front(id);
+        (*clean_map)[id] = clean_list->begin();
+    }
+
+    auto it = lru_list->begin();
+    std::advance(it, WORK_REG_SIZE);
+    if ((*clean_map).find(*it) == (*clean_map).end()) {
+        dirty_list->push_front(*it);
+        (*dirty_map)[id] = dirty_list->begin();
+    }
 }
 
-void ZALP::update(FRAME_ID id) {
-    auto iter = (*lru_map)[id];
-    lru_list->erase(iter);
-    push(id);
+void ZALP::update(FRAME_ID id, bool is_dirty) {
+    auto iterL = (*lru_map)[id];
+    lru_list->erase(iterL);
+
+    if (!is_dirty) {
+        auto iterC = (*clean_map)[id];
+        clean_list->erase(iterC);
+    }
+    if ((*dirty_map).find(id) != (*dirty_map).end()) {
+        auto iterD = (*dirty_map)[id];
+        dirty_list->erase(iterD);
+    }
+    push(id, is_dirty);
 }
 
 void ZALP::print_list() {
-    /*printf("\nlru_list: ");
+    printf("\n\nlru_list: ");
     for (auto& iter : *lru_list) printf("%d->", iter);
-    printf("\nfree_list: ");
-    for (auto& iter : *free_list) printf("%d->", iter);*/
-    for (int i = 0; i < CLUSTER_NUM; i++) {
-        printf("\ndirty %d:", i);
-        for (auto& iter : *dirty_cluster_list[i]) printf("%d->", iter);
-    }
+    printf("\n\nfree_list: ");
+    for (auto& iter : *free_list) printf("%d->", iter);
+    printf("\n\nclean_list: ");
+    for (auto& iter : *clean_list) printf("%d->", iter);
+    printf("\n\ndirty_list: ");
+    for (auto& iter : *dirty_list) printf("%d->", iter);
 }
 }  // namespace zns

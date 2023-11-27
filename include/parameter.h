@@ -7,7 +7,8 @@
 #define FRAME_SIZE 4096
 #define PAGE_SIZE 4096
 #define CLUSTER_NUM 8
-#define DEF_BUF_SIZE 4096
+#define DEF_BUF_SIZE 256
+#define WORK_REG_SIZE 960
 
 #define CAPACITY 0x1dc724000 //availible sector(512 byte) number
 //blkzone capacity /dev/nvme1n2

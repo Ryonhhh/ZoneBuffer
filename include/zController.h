@@ -17,7 +17,7 @@ class ZNSController {
 
   //bool is_page_valid(PAGE_ID page_id);
 
-  int read_page_p(PAGE_ID page_id, Frame *frm);
+  ZONE_ID read_page_p(PAGE_ID page_id, Frame *frm);
 
   ZONE_ID select_write_zone(PAGE_ID page_id);
 

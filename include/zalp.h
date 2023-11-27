@@ -22,25 +22,30 @@ class ZALP {
 
     ~ZALP();
 
-    int get_victim(std::list<int> *);
+    void get_candidate(std::list<int> *);
 
-    FRAME_ID get_free_frame(); 
+    FRAME_ID get_frame(); 
 
-    int set_dirty(FRAME_ID frame_id, int cf);  // cluster flag
+    bool is_evict();
 
-    void push(FRAME_ID id);
+    void set_dirty(FRAME_ID frame_id);
 
-    void update(FRAME_ID id);
+    void update_dirty(std::list<int> *);
+
+    void push(FRAME_ID id, bool is_dirty);
+
+    void update(FRAME_ID id, bool is_dirty);
 
     void print_list();
 
    private:
     std::list<FRAME_ID> *lru_list;
     std::list<FRAME_ID> *free_list;
-    std::list<FRAME_ID> *dirty_cluster_list[CLUSTER_NUM];
+    std::list<FRAME_ID> *clean_list;
+    std::list<FRAME_ID> *dirty_list;
 
     std::unordered_map<FRAME_ID, std::list<FRAME_ID>::iterator> *lru_map;
-    std::unordered_map<FRAME_ID, std::list<FRAME_ID>::iterator> *free_map;
+    std::unordered_map<FRAME_ID, std::list<FRAME_ID>::iterator> *clean_map;
     std::unordered_map<FRAME_ID, std::list<FRAME_ID>::iterator> *dirty_map;
 };
 }  // namespace zns

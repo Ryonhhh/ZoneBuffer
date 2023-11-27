@@ -48,7 +48,7 @@ void ZNSController::write_log() {
     //return page_id > 0 && get_valid(page_id);
 //}
 
-int ZNSController::read_page_p(PAGE_ID page_id, Frame *frm) {
+ZONE_ID ZNSController::read_page_p(PAGE_ID page_id, Frame *frm) {
     //if (!is_page_valid(page_id)) {
     //    return -1;
     //}
@@ -59,7 +59,7 @@ int ZNSController::read_page_p(PAGE_ID page_id, Frame *frm) {
     assert(ret == PAGE_SIZE);
     strcpy(frm->field, buf);
     inc_io_count();
-    return 0;
+    return page_addr / zone_size;
 }
 
 int ZNSController::write_page_p(PAGE_ID page_id, Frame *frm) {
