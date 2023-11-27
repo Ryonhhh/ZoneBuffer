@@ -40,13 +40,22 @@ FRAME_ID BufferManager::fix_page(PAGE_ID page_id) {
 
 FRAME_ID BufferManager::fix_page(bool is_write, PAGE_ID page_id) {
     BCB *bcb = get_bcb(page_id);
-    // std::cout << "op: " << (is_write ? "w " : "r ");
 
     FRAME_ID frame_id;
     if (bcb == nullptr) {
-        // if (zdsm->is_page_valid(page_id)) {
         if (strategy->is_evict()) evict_victim();
-        frame_id = strategy->get_frame();
+        int is_free = strategy->get_frame(&frame_id);
+        if (!is_free) {
+            PAGE_ID victim_page_id = get_page_id(frame_id);
+            int hash = hash_func(victim_page_id);
+            auto bcb_list = page_to_frame + hash;
+            for (auto it = bcb_list->begin(); it != bcb_list->end(); it++) {
+                if (it->get_page_id() == victim_page_id) {
+                    bcb_list->erase(it);
+                    break;
+                }
+            }
+        }
 
         insert_bcb(page_id, frame_id);
         strategy->push(frame_id, 0);
@@ -54,24 +63,34 @@ FRAME_ID BufferManager::fix_page(bool is_write, PAGE_ID page_id) {
         if (!is_write)
             (buffer + frame_id)->cluster_flag =
                 zdsm->read_page_p(page_id, buffer + frame_id);
-        //} else
-        //    return -1;
     } else {
         frame_id = bcb->get_frame_id();
         strategy->update(frame_id, bcb->is_dirty());
         inc_hit_count();
     }
+    //strategy->print_list();
     return frame_id;
 }
 
 void BufferManager::fix_new_page(PAGE_ID page_id, const Frame::sptr &frame) {
     FRAME_ID frame_id;
     if (strategy->is_evict()) evict_victim();
-    frame_id = strategy->get_frame();
+    int is_free = strategy->get_frame(&frame_id);
+    if(!is_free){
+    PAGE_ID victim_page_id = get_page_id(frame_id);
+        int hash = hash_func(victim_page_id);
+        auto bcb_list = page_to_frame + hash;
+        for (auto it = bcb_list->begin(); it != bcb_list->end(); it++) {
+            if (it->get_page_id() == victim_page_id) {
+                bcb_list->erase(it);
+                break;
+            }
+        }
+    }
 
     memcpy((buffer + frame_id)->field, frame->field, FRAME_SIZE);
     zdsm->create_new_page(page_id, buffer + frame_id);
-    (buffer + frame_id)->cluster_flag = 0;
+    (buffer + frame_id)->cluster_flag = page_id % CLUSTER_NUM;
     std::cout << "\nnew page_id: " << page_id << std::endl;
     insert_bcb(page_id, frame_id);
     strategy->push(frame_id, 0);
@@ -85,7 +104,7 @@ void BufferManager::evict_victim() {
     candidate_list = new std::list<int>;
     victim_list = new std::list<int>;
     strategy->get_candidate(candidate_list);
-    int dirty_cluster[CLUSTER_NUM];
+    int dirty_cluster[CLUSTER_NUM]={};
 
     for (auto &iter : *candidate_list) {
         dirty_cluster[(buffer + iter)->cluster_flag]++;
@@ -99,7 +118,7 @@ void BufferManager::evict_victim() {
     assert(cf!=-1);
 
     for (auto &iter : *candidate_list) {
-        if((buffer + iter)->cluster_flag==cf) victim_list->push_back(iter);
+        if ((buffer + iter)->cluster_flag == cf) victim_list->push_back(iter);
     }
     strategy->update_dirty(victim_list);
 
@@ -143,7 +162,7 @@ void BufferManager::clean_buffer() {
     for (int i = 0; i < CLUSTER_NUM; i++) printf("%d ", buffer_count[i]);
 }
 
-void BufferManager::set_dirty(int frame_id) {
+void BufferManager::set_dirty(FRAME_ID frame_id) {
     PAGE_ID page_id = get_page_id(frame_id);
     BCB *bcb = get_bcb(page_id);
     assert(bcb != nullptr);

@@ -98,6 +98,7 @@ int ZNSController::write_cluster_a(int cf, char *write_buffer,
     struct nvme_zns_append_args *nvme_write_buffer;
     nvme_zns_append(nvme_write_buffer);
     inc_io_count();*/
+    inc_io_count();
     return 0;
 }
 
@@ -119,6 +120,7 @@ void ZNSController::create_new_page(PAGE_ID page_id, Frame *frm) {
     inc_io_count();
     */
     write_page_p(page_id, frm);
+    inc_io_count();
 }
 
 void ZNSController::open_file() {

@@ -24,7 +24,7 @@ class ZALP {
 
     void get_candidate(std::list<int> *);
 
-    FRAME_ID get_frame(); 
+    bool get_frame(FRAME_ID *rtframe); 
 
     bool is_evict();
 
@@ -35,6 +35,8 @@ class ZALP {
     void push(FRAME_ID id, bool is_dirty);
 
     void update(FRAME_ID id, bool is_dirty);
+
+    bool lfind(std::list<FRAME_ID> *list, FRAME_ID frame_id);
 
     void print_list();
 
