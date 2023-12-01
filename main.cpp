@@ -18,6 +18,7 @@ void db_bench(const BufferManager::sptr &bm, string bench_file) {
 int main() {
     auto bm = make_shared<BufferManager>();
     db_bench(bm, load_db_file);
+    bm->hit_count_clear();
     db_bench(bm, test_db_file);
     return 0;
 }

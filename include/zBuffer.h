@@ -30,11 +30,17 @@ class BufferManager {
 
     int get_free_frames_num();
 
+    void hit_count_clear();
+
     int get_io_count();
 
     int get_hit_count();
 
    private:
+    bool zalp_wc = 0;
+    bool zalp = 1;
+    bool cflru = 0;
+    bool lru = 0;
     Frame buffer[DEF_BUF_SIZE]{};
     ZNSController *zdsm;
     int free_frames_num;
@@ -43,10 +49,13 @@ class BufferManager {
     list<BCB> page_to_frame[DEF_BUF_SIZE];
     // victim strategy
     ZALP *strategy;
+    LRU *lrus;
 
     int hit_count;
 
     static int hash_func(PAGE_ID page_id);
+
+    int select_victim();
 
     void evict_victim();
 
@@ -66,7 +75,7 @@ class BufferManager {
 
     void inc_hit_count();
 
-    int buffer_count[CLUSTER_NUM]{};
+    int buffer_count[100000]{};
 };
 }  // namespace zns
 

@@ -4,15 +4,14 @@
 #include <assert.h>
 #include <stdlib.h>
 #include <time.h>
+#include </usr/include/libnvme.h>
 #include "/home/wht/libzbd/include/libzbd/zbd.h"
-#include "/home/wht/nvme-cli-2.6/nvme.h"
 
 #include <cstdlib>
 #include <iostream>
 #include <list>
 #include <memory>
 #include <unordered_map>
-
 
 #include "parameter.h"
 

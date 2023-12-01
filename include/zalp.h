@@ -50,6 +50,23 @@ class ZALP {
     std::unordered_map<FRAME_ID, std::list<FRAME_ID>::iterator> *clean_map;
     std::unordered_map<FRAME_ID, std::list<FRAME_ID>::iterator> *dirty_map;
 };
+
+class LRU {
+ public:
+  LRU();
+
+  ~LRU();
+
+  int get_victim();
+
+  void push(int id);
+
+  void update(int id);
+
+ private:
+  std::list<int> *lru_list;
+  std::unordered_map<int, std::list<int>::iterator> *lru_map;
+};
 }  // namespace zns
 
 #endif  // ZNS_ZALP_HPP

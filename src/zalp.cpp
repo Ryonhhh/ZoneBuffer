@@ -134,4 +134,31 @@ void ZALP::print_list() {
     //printf("\n\ndirty_map: ");
     //for (auto iter : *dirty_map) printf("[%d]=%d ", iter.first, *(iter.second));
 }
+
+ LRU::LRU() {
+        lru_list = new std::list<int>();
+        lru_map = new std::unordered_map<int, std::list<int>::iterator>();
+    }
+
+    LRU::~LRU() {
+        free(lru_list);
+        free(lru_map);
+    }
+
+    int LRU::get_victim() {
+        int victim = lru_list->back();
+        lru_list->pop_back();
+        return victim;
+    }
+
+    void LRU::push(int id) {
+        lru_list->push_front(id);
+        (*lru_map)[id] = lru_list->begin();
+    }
+
+    void LRU::update(int id) {
+        auto iter = (*lru_map)[id];
+        lru_list->erase(iter);
+        push(id);
+    }
 }  // namespace zns
