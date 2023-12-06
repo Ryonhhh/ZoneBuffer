@@ -9,6 +9,7 @@
 #include <list>
 #include <memory>
 #include <unordered_map>
+#include <fstream>
 
 #include "/home/wht/libzbd/include/libzbd/zbd.h"
 #include "parameter.h"
@@ -18,7 +19,7 @@
 namespace zns {
 class ZALP {
    public:
-    ZALP();
+    ZALP(std::string out);
 
     ~ZALP();
 
@@ -41,6 +42,7 @@ class ZALP {
     void print_list();
 
    private:
+    std::string output;
     std::list<FRAME_ID> *lru_list;
     std::list<FRAME_ID> *free_list;
     std::list<FRAME_ID> *clean_list;

@@ -1,7 +1,7 @@
 #include "../include/zalp.h"
 
 namespace zns {
-ZALP::ZALP() {
+ZALP::ZALP(std::string out) {
     lru_list = new std::list<int>();
     free_list = new std::list<int>();
     clean_list = new std::list<int>();
@@ -13,6 +13,7 @@ ZALP::ZALP() {
     for (int i = 0; i < DEF_BUF_SIZE; i++) {
         free_list->push_back(i);
     }
+    output = out;
 }
 
 ZALP::~ZALP() {
@@ -32,6 +33,7 @@ bool ZALP::get_frame(FRAME_ID* rtframe) {
     } else {
         *rtframe = clean_list->back();
         clean_list->pop_back();
+        clean_map->erase(*rtframe);
         auto iterL = (*lru_map)[*rtframe];
         lru_list->erase(iterL);
         lru_map->erase(*rtframe);
@@ -42,8 +44,8 @@ bool ZALP::get_frame(FRAME_ID* rtframe) {
 bool ZALP::is_evict() {
     if (free_list->size() != 0) return 0;
     FRAME_ID last_clean = clean_list->back();
-    auto it = (*lru_map)[last_clean];
-    return (std::distance(lru_list->begin(), it) < WORK_REG_SIZE);
+    auto iterL = (*lru_map)[last_clean], it = lru_list->begin();
+    return (std::distance(it, iterL) < WORK_REG_SIZE);
 }
 
 void ZALP::get_candidate(std::list<int>* candidate_list) {
@@ -55,11 +57,11 @@ void ZALP::set_dirty(FRAME_ID id) {
     clean_list->erase(iterC);
     clean_map->erase(id);
 
-    auto iterL = (*lru_map)[id];
-    if (std::distance(lru_list->begin(), iterL) > WORK_REG_SIZE &&
-        !lfind(dirty_list, id)) {
+    auto iterL = (*lru_map)[id], it = lru_list->begin();
+    if (std::distance(it, iterL) >= WORK_REG_SIZE && !lfind(dirty_list, id)) {
         dirty_list->push_front(id);
         (*dirty_map)[id] = dirty_list->begin();
+        assert(dirty_list->size() <= DEF_BUF_SIZE - WORK_REG_SIZE);
     }
 }
 
@@ -84,12 +86,15 @@ void ZALP::push(FRAME_ID id, bool is_dirty) {
         (*clean_map)[id] = clean_list->begin();
     }
 
-    auto it = lru_list->begin();
-    std::advance(it, WORK_REG_SIZE);
-    if (!lfind(clean_list, *it) && !lfind(dirty_list, *it)) {
-        dirty_list->push_front(*it);
-        assert((*dirty_map).find(id)==(*dirty_map).end());
-        (*dirty_map)[*it] = dirty_list->begin();
+    auto iterL = lru_list->begin();
+    std::advance(iterL, WORK_REG_SIZE);
+    if (lru_list->size() > WORK_REG_SIZE && !lfind(clean_list, *iterL) &&
+        !lfind(dirty_list, *iterL)) {
+        dirty_list->push_front(*iterL);
+        assert((*dirty_map).find(*iterL) == (*dirty_map).end());
+        (*dirty_map)[*iterL] = dirty_list->begin();
+        if (dirty_list->size() > DEF_BUF_SIZE - WORK_REG_SIZE) print_list();
+        assert(dirty_list->size() <= DEF_BUF_SIZE - WORK_REG_SIZE);
     }
 }
 
@@ -102,8 +107,7 @@ void ZALP::update(FRAME_ID id, bool is_dirty) {
         auto iterC = (*clean_map)[id];
         clean_list->erase(iterC);
         clean_map->erase(id);
-    }
-    if (lfind(dirty_list, id)) {
+    } else if (lfind(dirty_list, id)) {
         auto iterD = (*dirty_map)[id];
         dirty_list->erase(iterD);
         dirty_map->erase(id);
@@ -131,34 +135,46 @@ void ZALP::print_list() {
     for (auto& iter : *clean_list) printf("%d->", iter);
     printf("\n\ndirty_list: ");
     for (auto& iter : *dirty_list) printf("%d->", iter);
-    //printf("\n\ndirty_map: ");
-    //for (auto iter : *dirty_map) printf("[%d]=%d ", iter.first, *(iter.second));
+    printf("\n");
+    // printf("\n\ndirty_map: ");
+    // for (auto iter : *dirty_map) printf("[%d]=%d ", iter.first,
+    // *(iter.second));
+    std::ofstream op(output, std::ios::app);
+    op << std::endl << "lru_list: ";
+    for (auto& iter : *lru_list) op << iter << "->";
+    op << std::endl << "free_list: ";
+    for (auto& iter : *free_list) op << iter << "->";
+    op << std::endl << "clean_list: ";
+    for (auto& iter : *clean_list) op << iter << "->";
+    op << std::endl << "dirty_list: ";
+    for (auto& iter : *dirty_list) op << iter << "->";
+    op.close();
 }
 
- LRU::LRU() {
-        lru_list = new std::list<int>();
-        lru_map = new std::unordered_map<int, std::list<int>::iterator>();
-    }
+LRU::LRU() {
+    lru_list = new std::list<int>();
+    lru_map = new std::unordered_map<int, std::list<int>::iterator>();
+}
 
-    LRU::~LRU() {
-        free(lru_list);
-        free(lru_map);
-    }
+LRU::~LRU() {
+    free(lru_list);
+    free(lru_map);
+}
 
-    int LRU::get_victim() {
-        int victim = lru_list->back();
-        lru_list->pop_back();
-        return victim;
-    }
+int LRU::get_victim() {
+    int victim = lru_list->back();
+    lru_list->pop_back();
+    return victim;
+}
 
-    void LRU::push(int id) {
-        lru_list->push_front(id);
-        (*lru_map)[id] = lru_list->begin();
-    }
+void LRU::push(int id) {
+    lru_list->push_front(id);
+    (*lru_map)[id] = lru_list->begin();
+}
 
-    void LRU::update(int id) {
-        auto iter = (*lru_map)[id];
-        lru_list->erase(iter);
-        push(id);
-    }
+void LRU::update(int id) {
+    auto iter = (*lru_map)[id];
+    lru_list->erase(iter);
+    push(id);
+}
 }  // namespace zns

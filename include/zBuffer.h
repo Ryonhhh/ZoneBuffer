@@ -36,12 +36,17 @@ class BufferManager {
 
     int get_hit_count();
 
+    std::string output; 
+
    private:
-    bool zalp_wc = 0;
-    bool zalp = 1;
+    bool zalp_wc = 1;
+    bool zalp = 0;
     bool cflru = 0;
     bool lru = 0;
+    enum WC{cold, warm, hot};
+    int cluster_num;
     Frame buffer[DEF_BUF_SIZE]{};
+    int cluster_flag[DEF_BUF_SIZE]{};
     ZNSController *zdsm;
     int free_frames_num;
     // Hash Table
@@ -56,6 +61,8 @@ class BufferManager {
     static int hash_func(PAGE_ID page_id);
 
     int select_victim();
+
+    int HC_Lv(int cluster_flag, int max);
 
     void evict_victim();
 

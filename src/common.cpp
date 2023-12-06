@@ -22,11 +22,16 @@ namespace zns {
         dirty = false;
     }
 
-    Frame::sptr generate_random_frame() {
+    Frame::sptr generate_random_frame(PAGE_ID page_id) {
         auto frame = std::make_shared<Frame>();
         srand((unsigned)time(NULL));
-        for (unsigned int i = 0; i < FRAME_SIZE - 1; i++) {
-            frame->field[i] = 'a' + ((int)rand())%26;
+        std::string page = std::to_string(page_id);
+        long unsigned int i = 0;
+        for (; i < sizeof(page); i++) {
+            frame->field[i] = page[i];
+        }
+        for (; i < FRAME_SIZE - 1; i++) {
+            frame->field[i] = 'a' + ((int)rand()) % 26;
         }
         frame->field[FRAME_SIZE - 1] = 0;
         return frame;

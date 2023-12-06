@@ -19,7 +19,6 @@ namespace zns {
 struct Frame {
   typedef std::shared_ptr<Frame> sptr;
   char field[FRAME_SIZE] = {};
-  int cluster_flag = 0;
 };
 
 
@@ -45,7 +44,7 @@ class BCB {
   bool dirty;
 };
 
-Frame::sptr generate_random_frame();
+Frame::sptr generate_random_frame(PAGE_ID page_id);
 }  // namespace zns
 
 #endif  // ZNS_COMMON

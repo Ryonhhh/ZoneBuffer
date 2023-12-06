@@ -1,128 +1,129 @@
 #ifndef ZNS_CONTROLLER
 #define ZNS_CONTROLLER
 
-#include <string.h>
-#include <iostream>
-#include <iomanip>
 #include <fcntl.h>
 #include <malloc.h>
-#include <fstream>
+#include <string.h>
 #include <time.h>
+
+#include <fstream>
+#include <iomanip>
+#include <iostream>
 
 #include "common.h"
 #include "parameter.h"
 
-
 namespace zns {
 class ZNSController {
- public:
-  ZNSController();
+   public:
+    ZNSController();
 
-  ~ZNSController();
+    ~ZNSController();
 
-  //bool is_page_valid(PAGE_ID page_id);
+    // bool is_page_valid(PAGE_ID page_id);
 
-  std::string output;
+    std::string output;
 
-  ZONE_ID read_page_p(PAGE_ID page_id, Frame *frm);
+    ZONE_ID read_page_p(PAGE_ID page_id, Frame *frm);
 
-  ZONE_ID select_write_zone(PAGE_ID page_id, int cluster_size);
+    ZONE_ID select_write_zone(PAGE_ID page_id, int cluster_size,
+                              int cluster_num);
 
-  int write_page_p(PAGE_ID page_id, Frame *frm);
+    int write_page_p(PAGE_ID page_id, Frame *frm, int cluster_num);
 
-  int write_cluster_p(int cf,char *write_buffer, PAGE_ID *page_list, int cluster_size);
-   
-  int write_cluster_a(int cf,char *write_buffer, PAGE_ID *page_list, int cluster_size);
+    int write_cluster_p(int cf, char *write_buffer, PAGE_ID *page_list,
+                        int cluster_size, int cluster_num);
 
-  void create_new_page(PAGE_ID page_id, Frame *frm);
+    int write_cluster_a(int cf, char *write_buffer, PAGE_ID *page_list,
+                        int cluster_size, int cluster_num);
 
-  void get_gc_info();
+    void create_new_page(PAGE_ID page_id, Frame *frm, int cluster_num);
 
-  void print_gc_info();
+    void get_gc_info();
 
-  void io_count_clear();
+    void print_gc_info(int cluster_num);
 
-  int get_io_count();
+    void io_count_clear();
 
- private:
-  
-  typedef struct ZoneDesc{
-    ZONE_ID id;
-    off_st ofst;
-    off_st wp;
-    int cond;
-    double idle_rate;
-    double gc_rate;
-  }ZoneDesc;
-  
-  unsigned int zone_number;
+    int get_io_count();
 
-  ZoneDesc Zone[MAX_ZONE_NUM];
+   private:
+    typedef struct ZoneDesc {
+        ZONE_ID id;
+        off_st ofst;
+        off_st wp;
+        int cond;
+        double idle_rate;
+        double gc_rate;
+    } ZoneDesc;
 
+    unsigned int zone_number;
 
-  unsigned int zone_size;
+    ZoneDesc Zone[MAX_ZONE_NUM];
 
-  unsigned int cap;
+    unsigned int zone_size;
 
-  long long block_per_zone;
+    unsigned int cap;
 
-  unsigned int *type;
+    long long block_per_zone;
 
-  FILE *log_file;
+    unsigned int *type;
 
-  zbd_info *info;
+    FILE *log_file;
 
-  int dev_id;
+    zbd_info *info;
 
-  bool *meta_page;
+    int dev_id;
 
-  double *zone_idle_rate;
+    bool *meta_page;
 
-  double *zone_gc_rate;
+    double *zone_idle_rate;
 
-  PAGE_ID pages_num;
+    double *zone_gc_rate;
 
-  off_st *pageid2addr;
+    PAGE_ID pages_num;
 
-  int io_count;
+    off_st *pageid2addr;
 
-  void open_file();
+    int io_count;
 
-  void close_file();
+    void open_file();
 
-  void init();
+    void close_file();
 
-  void reset_all();
+    void init();
 
-  void write_log();
+    void reset_all();
 
-  void open_zone(ZONE_ID zone_id);
+    void write_log();
 
-  void close_zone(ZONE_ID zone_id);
+    void open_zone(ZONE_ID zone_id);
 
-  void reset_zone(ZONE_ID zone_id);
+    void close_zone(ZONE_ID zone_id);
 
-  void finish_zone(ZONE_ID zone_id);
+    void reset_zone(ZONE_ID zone_id);
 
-  unsigned int get_zone_cond(ZONE_ID zone_id);
+    void finish_zone(ZONE_ID zone_id);
 
-  off_st get_zone_wp(ZONE_ID zone_id);
+    unsigned int get_zone_cond(ZONE_ID zone_id);
 
-  off_st get_page_addr(PAGE_ID page_id);
+    off_st get_zone_wp(ZONE_ID zone_id);
 
-  void set_page_addr(PAGE_ID page_id, off_st addr);
+    off_st get_page_addr(PAGE_ID page_id);
 
-  void set_valid(PAGE_ID page_id, bool is_valid);
+    void set_page_addr(PAGE_ID page_id, off_st addr);
 
-  bool get_valid(PAGE_ID page_id);
+    void set_valid(PAGE_ID page_id, bool is_valid);
 
-  void inc_io_count();
+    bool get_valid(PAGE_ID page_id);
 
-  void inc_pages_num();
+    void inc_io_count();
 
-  PAGE_ID get_pages_num();
+    void inc_pages_num();
 
-  void print_zns_info();
+    PAGE_ID get_pages_num();
+
+    void print_zns_info();
 };
 }  // namespace zns
 

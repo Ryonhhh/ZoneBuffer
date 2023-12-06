@@ -55,16 +55,16 @@ class Instruction {
                 opt = "READ";
                 break;
         }
-        os << "Instruction(" << opt << ", " << i.page_id << ")";
+        //os << "Instruction(" << opt << ", " << i.page_id << ")";
         return os;
     }
 
     void execute(const BufferManager::sptr &bm) {
         if (operate == INSERT) {
-            auto frame = generate_random_frame();
+            auto frame = generate_random_frame(page_id);
             bm->fix_new_page(page_id, frame);
         } else if (operate == UPDATE) {
-            auto new_frame = generate_random_frame();
+            auto new_frame = generate_random_frame(page_id);
             bm->write_page(page_id, new_frame);
         } else if (operate == READ) {
             bm->read_page(page_id);
@@ -79,6 +79,7 @@ class Instruction {
         while (getline(test_file, line)) {
             ins_vector->emplace_back(line);
         }
+        test_file.close();
         return ins_vector;
     }
 

@@ -12,9 +12,9 @@ ZNSController::ZNSController() {
     struct tm *p;
     time(&timep);
     p = localtime(&timep);
-    output = "./output/" + std::to_string(p->tm_mon) +
-                         std::to_string(p->tm_mday) +
-                         std::to_string(p->tm_hour) + std::to_string(p->tm_min);
+    output = "./output/" + std::to_string(p->tm_mon) + "_" +
+             std::to_string(p->tm_mday) + "_" + std::to_string(p->tm_hour) +
+             "_" + std::to_string(p->tm_min);
     std::ofstream op(output);
     op.close();
     io_count = 0;
@@ -27,7 +27,6 @@ ZNSController::~ZNSController() {
 
 void ZNSController::init() {
     // private init
-    // cap = (unsigned int)(CAPACITY * 512 / info->nr_zones);
     cap = (unsigned int)(CAPACITY * 512 / info->nr_zones) / 4;
     zone_size = info->zone_size;
     zone_number = MAX_ZONE_NUM;
@@ -64,19 +63,19 @@ ZONE_ID ZNSController::read_page_p(PAGE_ID page_id, Frame *frm) {
     off_st page_addr = get_page_addr(page_id);
     char *buf = reinterpret_cast<char *>(memalign(4096, PAGE_SIZE));
     assert(buf != nullptr);
-    int ret = pread(dev_id, buf, PAGE_SIZE, page_addr);
+    off_st ret = pread(dev_id, buf, PAGE_SIZE, page_addr);
     assert(ret == PAGE_SIZE);
     strcpy(frm->field, buf);
     inc_io_count();
     return page_addr / zone_size;
 }
 
-int ZNSController::write_page_p(PAGE_ID page_id, Frame *frm) {
+int ZNSController::write_page_p(PAGE_ID page_id, Frame *frm, int cluster_num) {
     set_valid(get_page_addr(page_id), 0);
-    ZONE_ID zoneWid = select_write_zone(page_id, 1);
+    ZONE_ID zoneWid = select_write_zone(page_id, 1, cluster_num);
     set_page_addr(page_id, Zone[zoneWid].wp);
     set_valid(get_page_addr(page_id), 1);
-    int ret = pwrite(dev_id, frm->field, PAGE_SIZE, Zone[zoneWid].wp);
+    off_st ret = pwrite(dev_id, frm->field, PAGE_SIZE, Zone[zoneWid].wp);
     assert(ret == PAGE_SIZE);
     // printf("\nzone_id:%d wp:%lld\n", zoneWid, wp_write);
     Zone[zoneWid].wp += ret;
@@ -85,16 +84,19 @@ int ZNSController::write_page_p(PAGE_ID page_id, Frame *frm) {
 }
 
 int ZNSController::write_cluster_p(int cf, char *write_buffer,
-                                   PAGE_ID *page_list, int cluster_size) {
-    if (cf == -1) cf = (int)rand() % CLUSTER_NUM;
-    ZONE_ID zoneWid = select_write_zone(cf, cluster_size);
+                                   PAGE_ID *page_list, int cluster_size,
+                                   int cluster_num) {
+    ZONE_ID zoneWid = select_write_zone(cf, cluster_size, cluster_num);
     for (int i = 0; i < cluster_size; i++) {
         set_valid(get_page_addr(page_list[i]), 0);
         set_page_addr(page_list[i], Zone[zoneWid].wp + i * PAGE_SIZE);
         set_valid(get_page_addr(page_list[i]), 1);
     }
-    int ret = pwrite(dev_id, write_buffer, PAGE_SIZE * cluster_size,
-                     Zone[zoneWid].wp);
+    //printf("%ld %ld\n", Zone[zoneWid].wp, get_zone_wp(zoneWid));
+    off_st ret = pwrite(dev_id, write_buffer, PAGE_SIZE * cluster_size,
+                        Zone[zoneWid].wp);
+    
+    //printf("%ld %ld\n", Zone[zoneWid].wp, get_zone_wp(zoneWid));
     assert(ret == PAGE_SIZE * cluster_size);
     Zone[zoneWid].wp += ret;
     inc_io_count();
@@ -102,7 +104,8 @@ int ZNSController::write_cluster_p(int cf, char *write_buffer,
 }
 
 int ZNSController::write_cluster_a(int cf, char *write_buffer,
-                                   PAGE_ID *page_list, int cluster_size) {
+                                   PAGE_ID *page_list, int cluster_size,
+                                   int cluster_num) {
     /*
     ZONE_ID zoneWid = select_write_zone(cf, cluster_size);
     for (int i = 0; i < cluster_size; i++) {
@@ -117,16 +120,17 @@ int ZNSController::write_cluster_a(int cf, char *write_buffer,
     return 0;
 }
 
-ZONE_ID ZNSController::select_write_zone(PAGE_ID page_id, int cluster_size) {
-    ZONE_ID zone_ret = (ZONE_ID)(page_id % CLUSTER_NUM);
+ZONE_ID ZNSController::select_write_zone(PAGE_ID page_id, int cluster_size,
+                                         int cluster_num) {
+    ZONE_ID zone_ret = (ZONE_ID)(page_id % cluster_num);
     while (Zone[zone_ret].cond == ZBD_ZONE_COND_FULL ||
-           Zone[zone_ret].wp + cluster_size * PAGE_SIZE >=
+           Zone[zone_ret].wp + cluster_size * PAGE_SIZE >
                Zone[zone_ret].ofst + cap) {
         if (Zone[zone_ret].cond == ZBD_ZONE_COND_EXP_OPEN) {
             finish_zone(zone_ret);
             Zone[zone_ret].cond = ZBD_ZONE_COND_FULL;
         }
-        zone_ret += CLUSTER_NUM;
+        zone_ret += cluster_num;
     }
     if (Zone[zone_ret].cond == ZBD_ZONE_COND_EMPTY) {
         open_zone(zone_ret);
@@ -135,13 +139,13 @@ ZONE_ID ZNSController::select_write_zone(PAGE_ID page_id, int cluster_size) {
     return zone_ret;
 }
 
-void ZNSController::create_new_page(PAGE_ID page_id, Frame *frm) {
-    ZONE_ID zoneWid = select_write_zone(page_id, 1);
+void ZNSController::create_new_page(PAGE_ID page_id, Frame *frm,
+                                    int cluster_num) {
+    ZONE_ID zoneWid = select_write_zone(page_id, 1, cluster_num);
     set_page_addr(page_id, Zone[zoneWid].wp);
     set_valid(get_page_addr(page_id), 1);
-    int ret = pwrite(dev_id, frm->field, PAGE_SIZE, Zone[zoneWid].wp);
+    off_st ret = pwrite(dev_id, frm->field, PAGE_SIZE, Zone[zoneWid].wp);
     assert(ret == PAGE_SIZE);
-    // printf("\nzone_id:%d wp:%lld\n", zoneWid, wp_write);
     Zone[zoneWid].wp += ret;
     inc_io_count();
 }
@@ -249,23 +253,22 @@ void ZNSController::get_gc_info() {
         Zone[i].idle_rate = (double)(Zone[i].wp - Zone[i].ofst) / cap;
         Zone[i].gc_rate = 0;
         for (PAGE_ID j = 0; j < cap / PAGE_SIZE; j++)
-            Zone[i].gc_rate += meta_page[i * block_per_zone + j];
+            Zone[i].gc_rate += 1 - meta_page[i * block_per_zone + j];
         Zone[i].gc_rate /= (cap / PAGE_SIZE);
-        if (i % CLUSTER_NUM == 0) printf("\n");
-        printf("\n\tzone \t%d\t idle_rate \t%f\t garbage_rate: \t%f\t", i,
-               Zone[i].idle_rate, Zone[i].gc_rate);
     }
 }
 
-void ZNSController::print_gc_info() {
+void ZNSController::print_gc_info(int cluster_num) {
     get_gc_info();
     std::ofstream op(output, std::ios::app);
-    for (ZONE_ID i = 0; i < zone_number; i++) {
-        if (i % CLUSTER_NUM == 0) op << std::endl;
-        ;
-        op << "\n\tzone \t" << i << "\t idle_rate \t" << std::setw(8)
-           << Zone[i].idle_rate << "\t garbage_rate: \t" << std::setw(8)
-           << Zone[i].gc_rate << "\t";
+    for (int j = 0; j < cluster_num; j++) {
+        op << std::endl;
+        for (ZONE_ID i = 0; i < zone_number; i++) {
+            if ((int)i % cluster_num == j)
+                op << "\n\tzone \t" << i << "\t idle_rate \t" << std::setw(8)
+                   << Zone[i].idle_rate << "\t garbage_rate: \t" << std::setw(8)
+                   << Zone[i].gc_rate << "\t";
+        }
     }
     op.close();
 }
@@ -274,19 +277,19 @@ void ZNSController::print_zns_info() {
     zbd_info *info_temp;
     info_temp = (struct zbd_info *)malloc(sizeof(struct zbd_info));
     zbd_get_info(dev_id, info_temp);
-    std::cout << " vendor_id: " << info_temp->vendor_id << std::endl;
-    std::cout << " nr_sectors: " << info_temp->nr_sectors << std::endl;
-    std::cout << " nr_lblocks: " << info_temp->nr_lblocks << std::endl;
-    std::cout << " nr_pblocks: " << info_temp->nr_pblocks << std::endl;
-    std::cout << " zone_size: " << info_temp->zone_size << std::endl;
-    std::cout << " zone_sectors: " << info_temp->zone_sectors << std::endl;
-    std::cout << " lblock_size: " << info_temp->lblock_size << std::endl;
-    std::cout << " pblock_size: " << info_temp->pblock_size << std::endl;
-    std::cout << " nr_zones: " << info_temp->nr_zones << std::endl;
-    std::cout << " max_nr_open_zones: " << info_temp->max_nr_open_zones
+    std::cout << " vendor_id: \t" << info_temp->vendor_id << std::endl;
+    std::cout << " nr_sectors: \t" << info_temp->nr_sectors << std::endl;
+    std::cout << " nr_lblocks: \t" << info_temp->nr_lblocks << std::endl;
+    std::cout << " nr_pblocks: \t" << info_temp->nr_pblocks << std::endl;
+    std::cout << " zone_size: \t" << info_temp->zone_size << std::endl;
+    std::cout << " zone_sectors: \t" << info_temp->zone_sectors << std::endl;
+    std::cout << " lblock_size: \t" << info_temp->lblock_size << std::endl;
+    std::cout << " pblock_size: \t" << info_temp->pblock_size << std::endl;
+    std::cout << " nr_zones: \t" << info_temp->nr_zones << std::endl;
+    std::cout << " max_nr_open_zones: \t" << info_temp->max_nr_open_zones
               << std::endl;
-    std::cout << " max_nr_active_zones: " << info_temp->max_nr_active_zones
+    std::cout << " max_nr_active_zones: \t" << info_temp->max_nr_active_zones
               << std::endl;
-    std::cout << " model: " << info_temp->model << std::endl;
+    std::cout << " model: \t" << info_temp->model << std::endl;
 }
 }  // namespace zns
