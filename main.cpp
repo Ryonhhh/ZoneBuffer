@@ -13,8 +13,8 @@ void db_bench(const BufferManager::sptr &bm, string bench_file) {
     int index = 0;
     for (auto &iter : *ins_vector) {
         // cout << std::endl << index++ << ": " << i << endl;
-        if (index % (ins_vector->size() / 10) == 0) printf("\n");
-        if (index % (ins_vector->size() / 100) == 0) printf("#");
+        if (index % (ins_vector->size() / 10) == 0) std::cout << std::endl;
+        if (index % (ins_vector->size() / 100) == 0) std::cout << "#";
         index++;
         iter.execute(bm);
     }
@@ -22,9 +22,12 @@ void db_bench(const BufferManager::sptr &bm, string bench_file) {
 }
 
 int main() {
+    srand((unsigned)time(NULL));
     auto bm = make_shared<BufferManager>();
+    std::cout<<"start loading..."<<std::endl;
     db_bench(bm, load_db_file);
     bm->hit_count_clear();
+    std::cout<<"bench start!"<<std::endl;
     start_t = clock();
     db_bench(bm, test_db_file);
     end_t = clock();

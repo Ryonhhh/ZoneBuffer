@@ -7,11 +7,13 @@
 namespace zns {
 BufferManager::BufferManager() {
     zdsm = new ZNSController();
-    output=zdsm->output;
+    output = zdsm->output;
     strategy = new ZALP(output);
     lrus = new LRU;
-    free_frames_num = DEF_BUF_SIZE;
-    cluster_num = zalp_wc ? HC_LV : (zalp ? CLUSTER_NUM : 1);
+    free_frames_num = DEF_BUF_SIZE; 
+    zdsm->cluster_num = zalp_wc ? HC_LV : (zalp ? CLUSTER_NUM : 1);
+    flush_count = (int *)malloc(sizeof(int) * zdsm->cluster_num);
+    for (int i = 0; i < zdsm->cluster_num; i++) flush_count[i] = 0;
     hit_count = 0;
 }
 
@@ -28,11 +30,13 @@ Frame::sptr BufferManager::read_page(PAGE_ID page_id) {
     // printf("read frm_id: %d", frame_id);
     auto frame = std::make_shared<Frame>();
     memcpy(frame->field, (buffer + frame_id)->field, FRAME_SIZE);
-    char read_id_[8];
+    read_count[frame_id]++;
+    char *read_id_ = (char *)malloc(sizeof(char) * sizeof(PAGE_ID));
     for (long unsigned int i = 0; i < sizeof(PAGE_ID); i++)
         read_id_[i] = (buffer + frame_id)->field[i];
-    PAGE_ID read_id = atol(read_id_);
-    assert(read_id == page_id);
+    PAGE_ID *read_id = (PAGE_ID *)malloc(sizeof(PAGE_ID));
+    memcpy(read_id, read_id_, sizeof(PAGE_ID));
+    assert(*read_id == page_id);
     return frame;
 }
 
@@ -40,11 +44,8 @@ void BufferManager::write_page(PAGE_ID page_id, const Frame::sptr &frame) {
     FRAME_ID frame_id = fix_page(true, page_id);
     // printf("write frm_id: %d", frame_id);
     memcpy((buffer + frame_id)->field, frame->field, FRAME_SIZE);
+    read_count[frame_id]++;
     set_dirty(frame_id);
-}
-
-FRAME_ID BufferManager::fix_page(PAGE_ID page_id) {
-    return fix_page(false, page_id);
 }
 
 FRAME_ID BufferManager::fix_page(bool is_write, PAGE_ID page_id) {
@@ -95,10 +96,12 @@ FRAME_ID BufferManager::fix_page(bool is_write, PAGE_ID page_id) {
                 if (zalp_wc) {
                     cluster_flag[frame_id] =
                         zdsm->read_page_p(page_id, buffer + frame_id) * 0;
+                    write_count[frame_id] = 0;
+                    read_count[frame_id] = 0;
                 } else if (zalp) {
                     cluster_flag[frame_id] =
                         zdsm->read_page_p(page_id, buffer + frame_id) %
-                        cluster_num;
+                        zdsm->cluster_num;
                 } else if (cflru) {
                     zdsm->read_page_p(page_id, buffer + frame_id);
                 }
@@ -124,10 +127,14 @@ void BufferManager::fix_new_page(PAGE_ID page_id, const Frame::sptr &frame) {
             free_frames_num--;
         }
         memcpy((buffer + frame_id)->field, frame->field, FRAME_SIZE);
-        zdsm->create_new_page(page_id, buffer + frame_id, cluster_num);
+        char *write_buffer =
+            reinterpret_cast<char *>(memalign(4096, FRAME_SIZE));
+        memcpy(write_buffer, frame->field, FRAME_SIZE);
+        zdsm->create_new_page(page_id, write_buffer);
         insert_bcb(page_id, frame_id);
         lrus->push(frame_id);
         set_page_id(frame_id, page_id);
+        free(write_buffer);
     } else {
         if (strategy->is_evict()) evict_victim();
         int is_free = strategy->get_frame(&frame_id);
@@ -144,15 +151,21 @@ void BufferManager::fix_new_page(PAGE_ID page_id, const Frame::sptr &frame) {
         }
 
         memcpy((buffer + frame_id)->field, frame->field, FRAME_SIZE);
-        zdsm->create_new_page(page_id, buffer + frame_id, cluster_num);
+        char *write_buffer =
+            reinterpret_cast<char *>(memalign(4096, FRAME_SIZE));
+        memcpy(write_buffer, frame->field, FRAME_SIZE);
+        zdsm->create_new_page(page_id, write_buffer);
         if (zalp_wc) {
             cluster_flag[frame_id] = 0;
+            write_count[frame_id] = 0;
+            read_count[frame_id] = 0;
         } else if (zalp) {
-            cluster_flag[frame_id] = page_id % CLUSTER_NUM;
+            cluster_flag[frame_id] = page_id % zdsm->cluster_num;
         }
         insert_bcb(page_id, frame_id);
         strategy->push(frame_id, 0);
         set_page_id(frame_id, page_id);
+        free(write_buffer);
     }
 }
 
@@ -165,15 +178,18 @@ int BufferManager::select_victim() {
     for (auto iter = bcb_list->begin(); iter != bcb_list->end(); iter++) {
         if (iter->get_page_id() == victim_page_id) {
             if (iter->is_dirty()) {
-                zdsm->write_page_p(victim_page_id, buffer + frame_id,
-                                   cluster_num);
+                char *write_buffer =
+                    reinterpret_cast<char *>(memalign(4096, FRAME_SIZE));
+                memcpy(write_buffer, (buffer + frame_id)->field, FRAME_SIZE);
+                zdsm->write_page_p(0, victim_page_id, reinterpret_cast<char const *>(write_buffer));
+                zdsm->garbage_collection_detect();
+                free(write_buffer);
             }
             bcb_list->erase(iter);
             break;
         }
     }
-    buffer_count[0]++;
-    std::cout << std::endl;
+    flush_count[0]++;
     return frame_id;
 }
 
@@ -191,43 +207,82 @@ void BufferManager::evict_victim() {
     std::list<int> *candidate_list, *victim_list;
     candidate_list = new std::list<int>;
     victim_list = new std::list<int>;
-    strategy->get_candidate(candidate_list);
 
     if (zalp_wc) {
-        int dirty_cluster[HC_LV] = {};
-        int max = 0;
-        for (auto &iter : *candidate_list)
-            if (cluster_flag[iter] > max)
-                max = cluster_flag[iter];
-        for (auto &iter : *candidate_list) {
-            switch (HC_Lv(cluster_flag[iter], max)) {
-
-                case cold:
-                    dirty_cluster[cold]++;
-                    break;
-                case warm:
-                    dirty_cluster[warm]++;
-                    break;
-                case hot:
-                    dirty_cluster[hot]++;
-                    break;
+        if (wh_only) {
+            strategy->get_candidate(candidate_list);
+            int dirty_cluster[HC_LV] = {};
+            int max = 0;
+            for (auto &iter : *candidate_list)
+                if (cluster_flag[iter] > max) max = cluster_flag[iter];
+            for (auto &iter : *candidate_list) {
+                switch (HC_Lv(cluster_flag[iter], max)) {
+                    case cold:
+                        dirty_cluster[cold]++;
+                        break;
+                    case warm:
+                        dirty_cluster[warm]++;
+                        break;
+                    case hot:
+                        dirty_cluster[hot]++;
+                        break;
+                }
             }
-        }
+            
+            cf = hot;
 
-        cf = -1;
-        int cfnum = -1;
-        for (int i = 0; i < HC_LV; i++) {
-            cf = cfnum > dirty_cluster[i] ? cf : i;
-            cfnum = cfnum > dirty_cluster[i] ? cfnum : dirty_cluster[i];
-        }
-        assert(cf != -1);
+            if (dirty_cluster[hot] < (DEF_BUF_SIZE - WORK_REG_SIZE) / 4) {
+                int cfnum = -1;
+                for (int i = 0; i < HC_LV; i++) {
+                    cf = cfnum > dirty_cluster[i] ? cf : i;
+                    cfnum = cfnum > dirty_cluster[i] ? cfnum : dirty_cluster[i];
+                }
+                assert(cf != -1);
+            }
 
-        for (auto &iter : *candidate_list) {
-            if (HC_Lv(cluster_flag[iter], max) == cf)
-                victim_list->push_back(iter);
+            for (auto &iter : *candidate_list) {
+                if (HC_Lv(cluster_flag[iter], max) == cf)
+                    victim_list->push_back(iter);
+            }
+            strategy->update_dirty_readhot(victim_list);
+        } else {
+            strategy->get_candidate(candidate_list);
+            int dirty_cluster[HC_LV] = {};
+            int max = 0;
+            for (auto &iter : *candidate_list)
+                if (cluster_flag[iter] > max) max = cluster_flag[iter];
+            for (auto &iter : *candidate_list) {
+                switch (HC_Lv(cluster_flag[iter], max)) {
+                    case cold:
+                        dirty_cluster[cold]++;
+                        break;
+                    case warm:
+                        dirty_cluster[warm]++;
+                        break;
+                    case hot:
+                        dirty_cluster[hot]++;
+                        break;
+                }
+            }
+
+            cf = -1;
+            int cfnum = -1;
+            for (int i = 0; i < HC_LV; i++) {
+                cf = cfnum > dirty_cluster[i] ? cf : i;
+                cfnum = cfnum > dirty_cluster[i] ? cfnum : dirty_cluster[i];
+            }
+            assert(cf != -1);
+
+            for (auto &iter : *candidate_list) {
+                if (HC_Lv(cluster_flag[iter], max) == cf)
+                    victim_list->push_back(iter);
+            }
+            strategy->update_dirty(victim_list);
         }
     } else if (zalp) {
-        int dirty_cluster[CLUSTER_NUM] = {};
+        strategy->get_candidate(candidate_list);
+        int *dirty_cluster = (int *)malloc(sizeof(int) * zdsm->cluster_num);
+        for (int i = 0; i < zdsm->cluster_num; i++) dirty_cluster[i] = 0;
 
         for (auto &iter : *candidate_list) {
             dirty_cluster[cluster_flag[iter]]++;
@@ -235,24 +290,22 @@ void BufferManager::evict_victim() {
 
         cf = -1;
         int cfnum = -1;
-        for (int i = 0; i < CLUSTER_NUM; i++) {
+        for (int i = 0; i < zdsm->cluster_num; i++) {
             cf = cfnum > dirty_cluster[i] ? cf : i;
             cfnum = cfnum > dirty_cluster[i] ? cfnum : dirty_cluster[i];
         }
         assert(cf != -1);
 
         for (auto &iter : *candidate_list) {
-            if (cluster_flag[iter] == cf)
-                victim_list->push_back(iter);
+            if (cluster_flag[iter] == cf) victim_list->push_back(iter);
         }
-    } 
-    else if (cflru) {
+        strategy->update_dirty(victim_list);
+        free(dirty_cluster);
+    } else if (cflru) {
+        strategy->get_candidate_cflru(victim_list);
         cf = 0;
-        for (auto &iter : *candidate_list) {
-            victim_list->push_back(iter);
-        }
+        strategy->update_dirty(victim_list);
     }
-    strategy->update_dirty(victim_list);
 
     char *write_buffer = reinterpret_cast<char *>(
         memalign(4096, victim_list->size() * FRAME_SIZE));
@@ -265,12 +318,12 @@ void BufferManager::evict_victim() {
         page_list[i] = get_page_id(iter);
         i++;
     }
-    zdsm->write_cluster_p(cf, write_buffer, page_list, i, cluster_num);
-    //printf("\nvictim cluster %d, flush %d pages\n", cf, i);
-    //std::ofstream op(output, std::ios::app);
-    //op << "\nvictim cluster " << cf << " flush pages " << i ;
-    //op.close();
-    buffer_count[cf]++;
+    zdsm->write_cluster_p(cf, reinterpret_cast<char const*>(write_buffer), page_list, victim_list->size());
+    // printf("\nvictim cluster %d, flush %d pages\n", cf, i);
+    // std::ofstream op(output, std::ios::app);
+    // op << "\nvictim cluster " << cf << " flush pages " << i ;
+    // op.close();
+    flush_count[cf] += victim_list->size();
 
     for (auto &iter : *victim_list) {
         PAGE_ID victim_page_id = get_page_id(iter);
@@ -283,6 +336,9 @@ void BufferManager::evict_victim() {
             }
         }
     }
+    zdsm->garbage_collection_detect();
+    free(page_list);
+    free(write_buffer);
 }
 
 void BufferManager::clean_buffer() {
@@ -291,17 +347,21 @@ void BufferManager::clean_buffer() {
     std::cout << std::endl << "Cleaning buffer" << std::endl;
     for (const auto &bcb_list : page_to_frame)
         for (const auto &iter : bcb_list)
-            if (iter.is_dirty())
-                zdsm->write_page_p(iter.get_page_id(),
-                                   buffer + iter.get_frame_id(), cluster_num);
+            if (iter.is_dirty()) {
+                char *write_buffer =
+                    reinterpret_cast<char *>(memalign(4096, FRAME_SIZE));
+                memcpy(write_buffer, (buffer + iter.get_frame_id())->field,
+                       FRAME_SIZE);
+                zdsm->write_page_p(0, iter.get_page_id(), reinterpret_cast<char const *>(write_buffer));
+                free(write_buffer);
+            }
 
-    op << std::endl;
+    op << std::endl << "flush count: ";
 
-    
-        for (int i = 0; i < cluster_num; i++) {
-            op << buffer_count[i] << " ";
-        }
-    
+    for (int i = 0; i < zdsm->cluster_num; i++) {
+        op << flush_count[i] << " ";
+    }
+
     op << std::endl;
 
     std::cout << "IO count: " << get_io_count() << std::endl;
@@ -311,7 +371,7 @@ void BufferManager::clean_buffer() {
     op << "zalp_wc:" << zalp_wc << " zalp:" << zalp << " cflru:" << cflru
        << " lru:" << lru << std::endl;
     op.close();
-    zdsm->print_gc_info(cluster_num);
+    zdsm->print_gc_info();
 }
 
 void BufferManager::set_dirty(FRAME_ID frame_id) {

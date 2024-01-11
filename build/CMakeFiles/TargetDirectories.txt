@@ -1,0 +1,6 @@
+/home/wht/zalpBuffer/build/CMakeFiles/main.dir
+/home/wht/zalpBuffer/build/CMakeFiles/edit_cache.dir
+/home/wht/zalpBuffer/build/CMakeFiles/rebuild_cache.dir
+/home/wht/zalpBuffer/build/src/CMakeFiles/zbuf.dir
+/home/wht/zalpBuffer/build/src/CMakeFiles/edit_cache.dir
+/home/wht/zalpBuffer/build/src/CMakeFiles/rebuild_cache.dir

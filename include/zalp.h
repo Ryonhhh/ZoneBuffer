@@ -7,12 +7,14 @@
 #include <cstdlib>
 #include <iostream>
 #include <list>
+#include <algorithm>
 #include <memory>
 #include <unordered_map>
 #include <fstream>
 
-#include "/home/wht/libzbd/include/libzbd/zbd.h"
+#include <libzbd/zbd.h>
 #include "parameter.h"
+#include "datastructure.h"
 
 #define cluster_gc_num 16
 
@@ -25,6 +27,8 @@ class ZALP {
 
     void get_candidate(std::list<int> *);
 
+    void get_candidate_cflru(std::list<int> *);
+
     bool get_frame(FRAME_ID *rtframe); 
 
     bool is_evict();
@@ -33,24 +37,24 @@ class ZALP {
 
     void update_dirty(std::list<int> *);
 
+    void update_dirty_readhot(std::list<int> *);
+
     void push(FRAME_ID id, bool is_dirty);
 
     void update(FRAME_ID id, bool is_dirty);
-
-    bool lfind(std::list<FRAME_ID> *list, FRAME_ID frame_id);
 
     void print_list();
 
    private:
     std::string output;
-    std::list<FRAME_ID> *lru_list;
-    std::list<FRAME_ID> *free_list;
-    std::list<FRAME_ID> *clean_list;
-    std::list<FRAME_ID> *dirty_list;
+    List *lList;
+    List *fList;
+    List *cList;
+    List *dList;
 
-    std::unordered_map<FRAME_ID, std::list<FRAME_ID>::iterator> *lru_map;
-    std::unordered_map<FRAME_ID, std::list<FRAME_ID>::iterator> *clean_map;
-    std::unordered_map<FRAME_ID, std::list<FRAME_ID>::iterator> *dirty_map;
+    HashTable *lMap;
+    HashTable *cMap;
+    HashTable *dMap;
 };
 
 class LRU {
@@ -66,8 +70,8 @@ class LRU {
   void update(int id);
 
  private:
-  std::list<int> *lru_list;
-  std::unordered_map<int, std::list<int>::iterator> *lru_map;
+  std::list<int> *lList;
+  std::unordered_map<int, std::list<int>::iterator> *lMap;
 };
 }  // namespace zns
 

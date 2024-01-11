@@ -1,0 +1,1055 @@
+
+
+	zone 	0	 idle_rate 	       1	 garbage_rate: 	0.319638	14	
+	zone 	4	 idle_rate 	0.999434	 garbage_rate: 	0.431856	14	
+	zone 	8	 idle_rate 	0.998868	 garbage_rate: 	0.900012	14	
+	zone 	12	 idle_rate 	0.998593	 garbage_rate: 	0.829909	14	
+	zone 	16	 idle_rate 	0.758182	 garbage_rate: 	0.713281	3	
+
+	zone 	1	 idle_rate 	       1	 garbage_rate: 	0.318216	14	
+	zone 	5	 idle_rate 	0.998912	 garbage_rate: 	 0.43029	14	
+	zone 	9	 idle_rate 	0.999173	 garbage_rate: 	0.896834	14	
+	zone 	13	 idle_rate 	0.998622	 garbage_rate: 	0.828952	14	
+	zone 	17	 idle_rate 	0.745735	 garbage_rate: 	0.719345	3	
+
+	zone 	2	 idle_rate 	       1	 garbage_rate: 	0.318115	14	
+	zone 	6	 idle_rate 	0.998448	 garbage_rate: 	0.432553	14	
+	zone 	10	 idle_rate 	0.999246	 garbage_rate: 	0.899185	14	
+	zone 	14	 idle_rate 	0.998419	 garbage_rate: 	0.833275	14	
+	zone 	18	 idle_rate 	0.815474	 garbage_rate: 	0.698178	3	
+
+	zone 	3	 idle_rate 	       1	 garbage_rate: 	0.315663	14	
+	zone 	7	 idle_rate 	0.999608	 garbage_rate: 	 0.42894	14	
+	zone 	11	 idle_rate 	0.998694	 garbage_rate: 	0.898169	14	
+	zone 	15	 idle_rate 	0.998897	 garbage_rate: 	0.827907	14	
+	zone 	19	 idle_rate 	0.770122	 garbage_rate: 	0.705736	3	
+gc_count: 1
+
+space amplification: 2.6298
+8
+
+
+	zone 	0	 idle_rate 	       1	 garbage_rate: 	0.320421	14	
+	zone 	4	 idle_rate 	0.999434	 garbage_rate: 	0.432596	14	
+	zone 	12	 idle_rate 	0.998593	 garbage_rate: 	0.831955	14	
+	zone 	16	 idle_rate 	0.876393	 garbage_rate: 	0.610289	3	
+
+	zone 	1	 idle_rate 	       1	 garbage_rate: 	 0.31913	14	
+	zone 	5	 idle_rate 	0.998912	 garbage_rate: 	0.431044	14	
+	zone 	9	 idle_rate 	0.999173	 garbage_rate: 	0.897516	14	
+	zone 	13	 idle_rate 	0.998622	 garbage_rate: 	0.830809	14	
+	zone 	17	 idle_rate 	 0.76667	 garbage_rate: 	 0.71299	3	
+
+	zone 	2	 idle_rate 	       1	 garbage_rate: 	 0.31913	14	
+	zone 	6	 idle_rate 	0.998448	 garbage_rate: 	0.433278	14	
+	zone 	10	 idle_rate 	0.999246	 garbage_rate: 	0.900026	14	
+	zone 	14	 idle_rate 	0.998419	 garbage_rate: 	0.835248	14	
+	zone 	18	 idle_rate 	0.835103	 garbage_rate: 	0.693927	3	
+
+	zone 	3	 idle_rate 	       1	 garbage_rate: 	0.316446	14	
+	zone 	7	 idle_rate 	0.999608	 garbage_rate: 	 0.42968	14	
+	zone 	11	 idle_rate 	0.998694	 garbage_rate: 	0.899025	14	
+	zone 	15	 idle_rate 	0.998897	 garbage_rate: 	0.829997	14	
+	zone 	19	 idle_rate 	0.788127	 garbage_rate: 	0.702545	3	
+gc_count: 2
+
+space amplification: 2.51647
+10
+
+
+	zone 	0	 idle_rate 	       1	 garbage_rate: 	 0.32135	14	
+	zone 	4	 idle_rate 	0.999434	 garbage_rate: 	0.433467	14	
+	zone 	12	 idle_rate 	0.998593	 garbage_rate: 	0.834349	14	
+	zone 	16	 idle_rate 	0.899605	 garbage_rate: 	0.605066	3	
+
+	zone 	1	 idle_rate 	       1	 garbage_rate: 	 0.32016	14	
+	zone 	5	 idle_rate 	0.998912	 garbage_rate: 	0.431856	14	
+	zone 	9	 idle_rate 	0.999173	 garbage_rate: 	0.898604	14	
+	zone 	13	 idle_rate 	0.998622	 garbage_rate: 	0.833174	14	
+	zone 	17	 idle_rate 	0.788446	 garbage_rate: 	0.708594	3	
+
+	zone 	2	 idle_rate 	       1	 garbage_rate: 	0.319943	14	
+	zone 	6	 idle_rate 	0.998448	 garbage_rate: 	0.434033	14	
+	zone 	14	 idle_rate 	0.998419	 garbage_rate: 	0.837367	14	
+	zone 	18	 idle_rate 	0.956883	 garbage_rate: 	0.589296	3	
+
+	zone 	3	 idle_rate 	       1	 garbage_rate: 	0.317331	14	
+	zone 	7	 idle_rate 	0.999608	 garbage_rate: 	0.430638	14	
+	zone 	11	 idle_rate 	0.998694	 garbage_rate: 	0.900026	14	
+	zone 	15	 idle_rate 	0.998897	 garbage_rate: 	0.831984	14	
+	zone 	19	 idle_rate 	 0.80912	 garbage_rate: 	0.698816	3	
+gc_count: 3
+
+space amplification: 2.4046
+11
+
+
+	zone 	0	 idle_rate 	       1	 garbage_rate: 	0.322728	14	
+	zone 	4	 idle_rate 	0.999434	 garbage_rate: 	0.435193	14	
+	zone 	12	 idle_rate 	0.998593	 garbage_rate: 	0.838513	14	
+	zone 	16	 idle_rate 	0.940344	 garbage_rate: 	0.598813	3	
+
+	zone 	1	 idle_rate 	       1	 garbage_rate: 	0.321959	14	
+	zone 	5	 idle_rate 	0.998912	 garbage_rate: 	0.433336	14	
+	zone 	9	 idle_rate 	0.999173	 garbage_rate: 	0.900012	14	
+	zone 	13	 idle_rate 	0.998622	 garbage_rate: 	0.837512	14	
+	zone 	17	 idle_rate 	0.830156	 garbage_rate: 	0.699542	3	
+
+	zone 	2	 idle_rate 	       1	 garbage_rate: 	 0.32164	14	
+	zone 	6	 idle_rate 	0.998448	 garbage_rate: 	 0.43557	14	
+	zone 	10	 idle_rate 	0.00191504	 garbage_rate: 	       0	3	
+	zone 	14	 idle_rate 	0.998419	 garbage_rate: 	0.841124	14	
+	zone 	18	 idle_rate 	0.999681	 garbage_rate: 	0.581999	3	
+
+	zone 	3	 idle_rate 	       1	 garbage_rate: 	0.319217	14	
+	zone 	7	 idle_rate 	0.999608	 garbage_rate: 	0.432364	14	
+	zone 	15	 idle_rate 	0.998897	 garbage_rate: 	0.836424	14	
+	zone 	19	 idle_rate 	0.948729	 garbage_rate: 	0.592024	3	
+gc_count: 4
+
+space amplification: 2.02507
+9
+
+
+	zone 	0	 idle_rate 	       1	 garbage_rate: 	0.354065	14	
+	zone 	4	 idle_rate 	0.999434	 garbage_rate: 	0.464078	14	
+	zone 	8	 idle_rate 	0.802983	 garbage_rate: 	0.508139	3	
+	zone 	12	 idle_rate 	0.998593	 garbage_rate: 	0.897081	14	
+	zone 	16	 idle_rate 	0.998448	 garbage_rate: 	0.782846	3	
+
+	zone 	1	 idle_rate 	       1	 garbage_rate: 	 0.35273	14	
+	zone 	5	 idle_rate 	0.998912	 garbage_rate: 	0.462932	14	
+	zone 	9	 idle_rate 	0.835916	 garbage_rate: 	0.528102	3	
+	zone 	13	 idle_rate 	0.998622	 garbage_rate: 	0.895761	14	
+	zone 	17	 idle_rate 	0.998796	 garbage_rate: 	0.778421	3	
+
+	zone 	2	 idle_rate 	       1	 garbage_rate: 	0.353499	14	
+	zone 	6	 idle_rate 	0.998448	 garbage_rate: 	0.464064	14	
+	zone 	10	 idle_rate 	0.909224	 garbage_rate: 	0.586627	3	
+	zone 	14	 idle_rate 	0.998419	 garbage_rate: 	0.900041	14	
+	zone 	18	 idle_rate 	0.999681	 garbage_rate: 	0.785646	3	
+
+	zone 	3	 idle_rate 	       1	 garbage_rate: 	0.351526	14	
+	zone 	7	 idle_rate 	0.999608	 garbage_rate: 	0.462816	14	
+	zone 	11	 idle_rate 	0.845259	 garbage_rate: 	0.534239	3	
+	zone 	15	 idle_rate 	0.998897	 garbage_rate: 	 0.89666	14	
+	zone 	19	 idle_rate 	0.999623	 garbage_rate: 	0.780162	3	
+gc_count: 5
+
+space amplification: 2.46558
+14
+
+
+	zone 	0	 idle_rate 	       1	 garbage_rate: 	0.356125	14	
+	zone 	4	 idle_rate 	0.999434	 garbage_rate: 	0.466153	14	
+	zone 	8	 idle_rate 	0.865787	 garbage_rate: 	0.557654	3	
+	zone 	12	 idle_rate 	0.998593	 garbage_rate: 	0.900012	14	
+	zone 	16	 idle_rate 	0.998448	 garbage_rate: 	 0.79023	3	
+
+	zone 	1	 idle_rate 	       1	 garbage_rate: 	0.354805	14	
+	zone 	5	 idle_rate 	0.998912	 garbage_rate: 	0.464818	14	
+	zone 	9	 idle_rate 	0.904611	 garbage_rate: 	0.581186	3	
+	zone 	13	 idle_rate 	0.998622	 garbage_rate: 	0.898532	14	
+	zone 	17	 idle_rate 	0.998796	 garbage_rate: 	0.786618	3	
+
+	zone 	2	 idle_rate 	       1	 garbage_rate: 	0.355734	14	
+	zone 	6	 idle_rate 	0.998448	 garbage_rate: 	0.465703	14	
+	zone 	10	 idle_rate 	0.974916	 garbage_rate: 	0.639363	3	
+	zone 	18	 idle_rate 	       1	 garbage_rate: 	0.792697	14	
+	zone 	22	 idle_rate 	0.0996402	 garbage_rate: 	0.903406	3	
+
+	zone 	3	 idle_rate 	       1	 garbage_rate: 	0.353775	14	
+	zone 	7	 idle_rate 	0.999608	 garbage_rate: 	0.464499	14	
+	zone 	11	 idle_rate 	0.917523	 garbage_rate: 	 0.58992	3	
+	zone 	15	 idle_rate 	0.998897	 garbage_rate: 	0.899997	14	
+	zone 	19	 idle_rate 	0.999623	 garbage_rate: 	0.787662	3	
+gc_count: 6
+
+space amplification: 2.47024
+12
+
+
+	zone 	0	 idle_rate 	       1	 garbage_rate: 	0.356125	14	
+	zone 	4	 idle_rate 	0.999434	 garbage_rate: 	0.466153	14	
+	zone 	8	 idle_rate 	0.865787	 garbage_rate: 	0.557988	3	
+	zone 	16	 idle_rate 	       1	 garbage_rate: 	0.788722	14	
+	zone 	20	 idle_rate 	0.098436	 garbage_rate: 	0.901607	3	
+
+	zone 	1	 idle_rate 	       1	 garbage_rate: 	0.354805	14	
+	zone 	5	 idle_rate 	0.998912	 garbage_rate: 	0.464833	14	
+	zone 	9	 idle_rate 	0.904611	 garbage_rate: 	0.581462	3	
+	zone 	13	 idle_rate 	0.998622	 garbage_rate: 	0.898532	14	
+	zone 	17	 idle_rate 	0.998796	 garbage_rate: 	0.786705	3	
+
+	zone 	2	 idle_rate 	       1	 garbage_rate: 	0.355748	14	
+	zone 	6	 idle_rate 	0.998448	 garbage_rate: 	0.465718	14	
+	zone 	10	 idle_rate 	0.974916	 garbage_rate: 	0.639769	3	
+	zone 	18	 idle_rate 	       1	 garbage_rate: 	 0.79274	14	
+	zone 	22	 idle_rate 	0.0996402	 garbage_rate: 	0.903406	3	
+
+	zone 	3	 idle_rate 	       1	 garbage_rate: 	0.353775	14	
+	zone 	7	 idle_rate 	0.999608	 garbage_rate: 	0.464499	14	
+	zone 	11	 idle_rate 	0.919467	 garbage_rate: 	0.590486	3	
+	zone 	15	 idle_rate 	0.998897	 garbage_rate: 	0.900041	14	
+	zone 	19	 idle_rate 	0.999623	 garbage_rate: 	0.787721	3	
+gc_count: 7
+
+space amplification: 2.35272
+15
+
+
+	zone 	0	 idle_rate 	       1	 garbage_rate: 	 0.35701	14	
+	zone 	4	 idle_rate 	0.999434	 garbage_rate: 	0.467212	14	
+	zone 	8	 idle_rate 	0.901506	 garbage_rate: 	0.584726	3	
+	zone 	16	 idle_rate 	       1	 garbage_rate: 	0.792392	14	
+	zone 	20	 idle_rate 	0.098436	 garbage_rate: 	0.902986	3	
+
+	zone 	1	 idle_rate 	       1	 garbage_rate: 	0.355835	14	
+	zone 	5	 idle_rate 	0.998912	 garbage_rate: 	0.465631	14	
+	zone 	9	 idle_rate 	0.938893	 garbage_rate: 	0.608809	3	
+	zone 	13	 idle_rate 	0.998622	 garbage_rate: 	0.900012	14	
+	zone 	17	 idle_rate 	0.998796	 garbage_rate: 	0.790782	3	
+
+	zone 	2	 idle_rate 	       1	 garbage_rate: 	0.356749	14	
+	zone 	6	 idle_rate 	0.998448	 garbage_rate: 	0.466603	14	
+	zone 	10	 idle_rate 	0.999985	 garbage_rate: 	0.666347	3	
+	zone 	18	 idle_rate 	       1	 garbage_rate: 	0.796396	14	
+	zone 	22	 idle_rate 	0.106502	 garbage_rate: 	 0.89814	3	
+
+	zone 	3	 idle_rate 	       1	 garbage_rate: 	0.354863	14	
+	zone 	7	 idle_rate 	0.999608	 garbage_rate: 	0.465573	14	
+	zone 	11	 idle_rate 	0.955301	 garbage_rate: 	0.618979	3	
+	zone 	19	 idle_rate 	       1	 garbage_rate: 	0.790854	14	
+	zone 	23	 idle_rate 	0.0995822	 garbage_rate: 	 0.90184	3	
+gc_count: 8
+
+space amplification: 2.29196
+13
+
+
+	zone 	0	 idle_rate 	       1	 garbage_rate: 	0.399678	14	
+	zone 	4	 idle_rate 	0.999434	 garbage_rate: 	0.504323	14	
+	zone 	8	 idle_rate 	0.999956	 garbage_rate: 	0.895833	14	
+	zone 	12	 idle_rate 	0.820407	 garbage_rate: 	0.519615	3	
+	zone 	16	 idle_rate 	       1	 garbage_rate: 	0.896269	14	
+	zone 	20	 idle_rate 	0.998999	 garbage_rate: 	0.795453	3	
+
+	zone 	1	 idle_rate 	       1	 garbage_rate: 	0.397618	14	
+	zone 	5	 idle_rate 	0.998912	 garbage_rate: 	0.503032	14	
+	zone 	9	 idle_rate 	0.999666	 garbage_rate: 	0.897357	14	
+	zone 	13	 idle_rate 	0.831665	 garbage_rate: 	0.527536	3	
+	zone 	17	 idle_rate 	       1	 garbage_rate: 	0.895964	14	
+	zone 	21	 idle_rate 	0.998941	 garbage_rate: 	0.796904	3	
+
+	zone 	2	 idle_rate 	       1	 garbage_rate: 	0.398256	14	
+	zone 	6	 idle_rate 	0.998448	 garbage_rate: 	0.504831	14	
+	zone 	10	 idle_rate 	0.999985	 garbage_rate: 	0.900026	14	
+	zone 	14	 idle_rate 	 0.91053	 garbage_rate: 	0.590994	3	
+	zone 	18	 idle_rate 	       1	 garbage_rate: 	0.897676	14	
+	zone 	22	 idle_rate 	 0.99926	 garbage_rate: 	 0.80822	3	
+
+	zone 	3	 idle_rate 	       1	 garbage_rate: 	0.398169	14	
+	zone 	7	 idle_rate 	0.999608	 garbage_rate: 	0.503583	14	
+	zone 	11	 idle_rate 	0.998854	 garbage_rate: 	0.897806	14	
+	zone 	15	 idle_rate 	0.893744	 garbage_rate: 	0.572743	3	
+	zone 	19	 idle_rate 	       1	 garbage_rate: 	0.896036	14	
+	zone 	23	 idle_rate 	0.998839	 garbage_rate: 	0.802939	3	
+gc_count: 9
+
+space amplification: 3.00639
+10
+
+
+	zone 	0	 idle_rate 	       1	 garbage_rate: 	0.400679	14	
+	zone 	4	 idle_rate 	0.999434	 garbage_rate: 	0.505208	14	
+	zone 	8	 idle_rate 	0.999956	 garbage_rate: 	0.898372	14	
+	zone 	12	 idle_rate 	0.874057	 garbage_rate: 	0.560179	3	
+	zone 	16	 idle_rate 	       1	 garbage_rate: 	0.897777	14	
+	zone 	20	 idle_rate 	0.998999	 garbage_rate: 	0.801285	3	
+
+	zone 	1	 idle_rate 	       1	 garbage_rate: 	0.398517	14	
+	zone 	5	 idle_rate 	0.998912	 garbage_rate: 	0.503859	14	
+	zone 	9	 idle_rate 	0.999666	 garbage_rate: 	0.899968	14	
+	zone 	13	 idle_rate 	0.880803	 garbage_rate: 	0.568202	3	
+	zone 	17	 idle_rate 	       1	 garbage_rate: 	0.897618	14	
+	zone 	21	 idle_rate 	0.998941	 garbage_rate: 	0.801909	3	
+
+	zone 	2	 idle_rate 	       1	 garbage_rate: 	0.399214	14	
+	zone 	6	 idle_rate 	0.998448	 garbage_rate: 	0.505469	14	
+	zone 	14	 idle_rate 	       1	 garbage_rate: 	0.619879	14	
+	zone 	18	 idle_rate 	       1	 garbage_rate: 	0.899141	14	
+	zone 	22	 idle_rate 	       1	 garbage_rate: 	0.812689	14	
+	zone 	26	 idle_rate 	0.0601062	 garbage_rate: 	0.952414	3	
+
+	zone 	3	 idle_rate 	       1	 garbage_rate: 	0.399257	14	
+	zone 	7	 idle_rate 	0.999608	 garbage_rate: 	0.504207	14	
+	zone 	11	 idle_rate 	0.998854	 garbage_rate: 	0.900012	14	
+	zone 	15	 idle_rate 	0.948033	 garbage_rate: 	0.615686	3	
+	zone 	19	 idle_rate 	       1	 garbage_rate: 	0.897748	14	
+	zone 	23	 idle_rate 	0.998839	 garbage_rate: 	0.808133	3	
+gc_count: 10
+
+space amplification: 3.01283
+11
+
+
+	zone 	0	 idle_rate 	       1	 garbage_rate: 	0.400708	14	
+	zone 	4	 idle_rate 	0.999434	 garbage_rate: 	0.505208	14	
+	zone 	8	 idle_rate 	0.999956	 garbage_rate: 	0.898445	14	
+	zone 	12	 idle_rate 	0.875885	 garbage_rate: 	0.561064	3	
+	zone 	16	 idle_rate 	       1	 garbage_rate: 	0.897864	14	
+	zone 	20	 idle_rate 	0.998999	 garbage_rate: 	0.801445	3	
+
+	zone 	1	 idle_rate 	       1	 garbage_rate: 	0.398517	14	
+	zone 	5	 idle_rate 	0.998912	 garbage_rate: 	0.503874	14	
+	zone 	9	 idle_rate 	0.999666	 garbage_rate: 	0.900026	14	
+	zone 	13	 idle_rate 	0.882356	 garbage_rate: 	0.569478	3	
+	zone 	17	 idle_rate 	       1	 garbage_rate: 	0.897719	14	
+	zone 	21	 idle_rate 	0.998941	 garbage_rate: 	0.802083	3	
+
+	zone 	2	 idle_rate 	       1	 garbage_rate: 	0.399228	14	
+	zone 	6	 idle_rate 	0.998448	 garbage_rate: 	0.505469	14	
+	zone 	14	 idle_rate 	       1	 garbage_rate: 	0.620299	14	
+	zone 	18	 idle_rate 	       1	 garbage_rate: 	 0.89917	14	
+	zone 	22	 idle_rate 	       1	 garbage_rate: 	0.812761	14	
+	zone 	26	 idle_rate 	0.0617746	 garbage_rate: 	0.951355	3	
+
+	zone 	3	 idle_rate 	       1	 garbage_rate: 	0.399301	14	
+	zone 	7	 idle_rate 	0.999608	 garbage_rate: 	0.504222	14	
+	zone 	15	 idle_rate 	       1	 garbage_rate: 	0.616542	14	
+	zone 	19	 idle_rate 	       1	 garbage_rate: 	0.897806	14	
+	zone 	23	 idle_rate 	       1	 garbage_rate: 	 0.80706	14	
+	zone 	27	 idle_rate 	0.0468605	 garbage_rate: 	0.954271	3	
+gc_count: 11
+
+space amplification: 2.9163
+9
+
+
+	zone 	0	 idle_rate 	       1	 garbage_rate: 	0.401245	14	
+	zone 	4	 idle_rate 	0.999434	 garbage_rate: 	0.505731	14	
+	zone 	8	 idle_rate 	0.999956	 garbage_rate: 	0.899808	14	
+	zone 	12	 idle_rate 	0.905409	 garbage_rate: 	0.584871	3	
+	zone 	16	 idle_rate 	       1	 garbage_rate: 	0.898865	14	
+	zone 	20	 idle_rate 	0.998999	 garbage_rate: 	0.804376	3	
+
+	zone 	1	 idle_rate 	       1	 garbage_rate: 	0.399199	14	
+	zone 	5	 idle_rate 	0.998912	 garbage_rate: 	0.504367	14	
+	zone 	9	 idle_rate 	0.0124042	 garbage_rate: 	0.00103006	3	
+	zone 	13	 idle_rate 	0.999463	 garbage_rate: 	0.593431	3	
+	zone 	17	 idle_rate 	       1	 garbage_rate: 	 0.89888	14	
+	zone 	21	 idle_rate 	0.998941	 garbage_rate: 	0.805217	3	
+
+	zone 	2	 idle_rate 	       1	 garbage_rate: 	0.399823	14	
+	zone 	6	 idle_rate 	0.998448	 garbage_rate: 	0.505992	14	
+	zone 	14	 idle_rate 	       1	 garbage_rate: 	0.633603	14	
+	zone 	18	 idle_rate 	       1	 garbage_rate: 	0.900012	14	
+	zone 	22	 idle_rate 	       1	 garbage_rate: 	0.815445	14	
+	zone 	26	 idle_rate 	0.0922847	 garbage_rate: 	0.933148	3	
+
+	zone 	3	 idle_rate 	       1	 garbage_rate: 	0.399707	14	
+	zone 	7	 idle_rate 	0.999608	 garbage_rate: 	0.504672	14	
+	zone 	15	 idle_rate 	       1	 garbage_rate: 	0.635823	14	
+	zone 	19	 idle_rate 	       1	 garbage_rate: 	0.898706	14	
+	zone 	23	 idle_rate 	       1	 garbage_rate: 	0.809947	14	
+	zone 	27	 idle_rate 	0.0787198	 garbage_rate: 	 0.92939	3	
+gc_count: 12
+
+space amplification: 2.52888
+18
+
+
+	zone 	0	 idle_rate 	       1	 garbage_rate: 	0.401274	14	
+	zone 	4	 idle_rate 	0.999434	 garbage_rate: 	0.505745	14	
+	zone 	8	 idle_rate 	0.999956	 garbage_rate: 	0.900041	14	
+	zone 	12	 idle_rate 	0.909485	 garbage_rate: 	0.587294	3	
+	zone 	16	 idle_rate 	       1	 garbage_rate: 	0.898953	14	
+	zone 	20	 idle_rate 	0.998999	 garbage_rate: 	0.804898	3	
+
+	zone 	1	 idle_rate 	       1	 garbage_rate: 	0.399228	14	
+	zone 	5	 idle_rate 	0.998912	 garbage_rate: 	 0.50441	14	
+	zone 	9	 idle_rate 	0.0140146	 garbage_rate: 	0.00161038	3	
+	zone 	13	 idle_rate 	0.999463	 garbage_rate: 	0.595593	3	
+	zone 	17	 idle_rate 	       1	 garbage_rate: 	0.898982	14	
+	zone 	21	 idle_rate 	0.998941	 garbage_rate: 	0.805522	3	
+
+	zone 	2	 idle_rate 	       1	 garbage_rate: 	0.399881	14	
+	zone 	6	 idle_rate 	0.998448	 garbage_rate: 	0.506035	14	
+	zone 	14	 idle_rate 	       1	 garbage_rate: 	0.634735	14	
+	zone 	22	 idle_rate 	       1	 garbage_rate: 	 0.81575	14	
+	zone 	26	 idle_rate 	0.196074	 garbage_rate: 	0.830794	3	
+
+	zone 	3	 idle_rate 	       1	 garbage_rate: 	0.399808	14	
+	zone 	7	 idle_rate 	0.999608	 garbage_rate: 	0.504701	14	
+	zone 	15	 idle_rate 	       1	 garbage_rate: 	0.637549	14	
+	zone 	19	 idle_rate 	       1	 garbage_rate: 	0.898778	14	
+	zone 	23	 idle_rate 	       1	 garbage_rate: 	0.810266	14	
+	zone 	27	 idle_rate 	0.0823033	 garbage_rate: 	0.927127	3	
+gc_count: 13
+
+space amplification: 2.42415
+8
+
+
+	zone 	0	 idle_rate 	       1	 garbage_rate: 	 0.40197	14	
+	zone 	4	 idle_rate 	0.999434	 garbage_rate: 	0.506354	14	
+	zone 	12	 idle_rate 	       1	 garbage_rate: 	0.607547	14	
+	zone 	16	 idle_rate 	       1	 garbage_rate: 	0.900012	14	
+	zone 	20	 idle_rate 	       1	 garbage_rate: 	0.807002	14	
+	zone 	24	 idle_rate 	0.0429434	 garbage_rate: 	0.963687	3	
+
+	zone 	1	 idle_rate 	       1	 garbage_rate: 	0.399765	14	
+	zone 	5	 idle_rate 	0.998912	 garbage_rate: 	 0.50502	14	
+	zone 	9	 idle_rate 	0.0464978	 garbage_rate: 	0.0108664	3	
+	zone 	13	 idle_rate 	0.999463	 garbage_rate: 	0.612422	3	
+	zone 	17	 idle_rate 	       1	 garbage_rate: 	0.899983	14	
+	zone 	21	 idle_rate 	0.998941	 garbage_rate: 	0.808757	3	
+
+	zone 	2	 idle_rate 	       1	 garbage_rate: 	0.400563	14	
+	zone 	6	 idle_rate 	0.998448	 garbage_rate: 	0.506485	14	
+	zone 	14	 idle_rate 	       1	 garbage_rate: 	0.646167	14	
+	zone 	22	 idle_rate 	       1	 garbage_rate: 	0.818593	14	
+	zone 	26	 idle_rate 	0.225119	 garbage_rate: 	0.817389	3	
+
+	zone 	3	 idle_rate 	       1	 garbage_rate: 	0.400302	14	
+	zone 	7	 idle_rate 	0.999608	 garbage_rate: 	0.505208	14	
+	zone 	15	 idle_rate 	       1	 garbage_rate: 	0.651549	14	
+	zone 	19	 idle_rate 	       1	 garbage_rate: 	0.899968	14	
+	zone 	23	 idle_rate 	       1	 garbage_rate: 	0.813211	14	
+	zone 	27	 idle_rate 	0.111537	 garbage_rate: 	0.909195	3	
+gc_count: 14
+
+space amplification: 2.3661
+16
+
+
+	zone 	0	 idle_rate 	       1	 garbage_rate: 	 0.40197	14	
+	zone 	4	 idle_rate 	0.999434	 garbage_rate: 	0.506383	14	
+	zone 	12	 idle_rate 	       1	 garbage_rate: 	0.608243	14	
+	zone 	20	 idle_rate 	       1	 garbage_rate: 	 0.80706	14	
+	zone 	24	 idle_rate 	0.142932	 garbage_rate: 	0.863959	3	
+
+	zone 	1	 idle_rate 	       1	 garbage_rate: 	0.399765	14	
+	zone 	5	 idle_rate 	0.998912	 garbage_rate: 	0.505049	14	
+	zone 	9	 idle_rate 	0.0481227	 garbage_rate: 	0.0113307	3	
+	zone 	13	 idle_rate 	0.999463	 garbage_rate: 	 0.61306	3	
+	zone 	17	 idle_rate 	       1	 garbage_rate: 	0.900012	14	
+	zone 	21	 idle_rate 	0.998941	 garbage_rate: 	0.808844	3	
+
+	zone 	2	 idle_rate 	       1	 garbage_rate: 	0.400577	14	
+	zone 	6	 idle_rate 	0.998448	 garbage_rate: 	0.506529	14	
+	zone 	14	 idle_rate 	       1	 garbage_rate: 	0.646631	14	
+	zone 	22	 idle_rate 	       1	 garbage_rate: 	0.818695	14	
+	zone 	26	 idle_rate 	0.227034	 garbage_rate: 	 0.81617	3	
+
+	zone 	3	 idle_rate 	       1	 garbage_rate: 	0.400345	14	
+	zone 	7	 idle_rate 	0.999608	 garbage_rate: 	0.505237	14	
+	zone 	15	 idle_rate 	       1	 garbage_rate: 	0.652101	14	
+	zone 	19	 idle_rate 	       1	 garbage_rate: 	0.899983	14	
+	zone 	23	 idle_rate 	       1	 garbage_rate: 	0.813399	14	
+	zone 	27	 idle_rate 	0.112987	 garbage_rate: 	0.908296	3	
+gc_count: 15
+
+space amplification: 2.2575
+17
+
+
+	zone 	0	 idle_rate 	       1	 garbage_rate: 	 0.40197	14	
+	zone 	4	 idle_rate 	0.999434	 garbage_rate: 	0.506383	14	
+	zone 	12	 idle_rate 	       1	 garbage_rate: 	0.608722	14	
+	zone 	20	 idle_rate 	       1	 garbage_rate: 	0.807132	14	
+	zone 	24	 idle_rate 	0.144847	 garbage_rate: 	0.862378	3	
+
+	zone 	1	 idle_rate 	       1	 garbage_rate: 	0.399808	14	
+	zone 	5	 idle_rate 	0.998912	 garbage_rate: 	0.505063	14	
+	zone 	9	 idle_rate 	0.0481227	 garbage_rate: 	0.0115918	3	
+	zone 	13	 idle_rate 	0.999463	 garbage_rate: 	0.613452	3	
+	zone 	21	 idle_rate 	       1	 garbage_rate: 	0.807886	14	
+	zone 	25	 idle_rate 	0.0989293	 garbage_rate: 	0.901114	3	
+
+	zone 	2	 idle_rate 	       1	 garbage_rate: 	0.400592	14	
+	zone 	6	 idle_rate 	0.998448	 garbage_rate: 	0.506543	14	
+	zone 	14	 idle_rate 	       1	 garbage_rate: 	0.647052	14	
+	zone 	22	 idle_rate 	       1	 garbage_rate: 	0.818782	14	
+	zone 	26	 idle_rate 	0.227034	 garbage_rate: 	0.816475	3	
+
+	zone 	3	 idle_rate 	       1	 garbage_rate: 	0.400345	14	
+	zone 	7	 idle_rate 	0.999608	 garbage_rate: 	0.505281	14	
+	zone 	15	 idle_rate 	       1	 garbage_rate: 	0.652449	14	
+	zone 	19	 idle_rate 	       1	 garbage_rate: 	0.900012	14	
+	zone 	23	 idle_rate 	       1	 garbage_rate: 	0.813472	14	
+	zone 	27	 idle_rate 	0.114554	 garbage_rate: 	0.907135	3	
+gc_count: 16
+
+space amplification: 2.14825
+19
+
+
+	zone 	0	 idle_rate 	       1	 garbage_rate: 	0.423906	14	
+	zone 	4	 idle_rate 	0.999434	 garbage_rate: 	0.526912	14	
+	zone 	8	 idle_rate 	0.681262	 garbage_rate: 	0.410124	3	
+	zone 	12	 idle_rate 	       1	 garbage_rate: 	0.846826	14	
+	zone 	20	 idle_rate 	       1	 garbage_rate: 	0.897183	14	
+	zone 	24	 idle_rate 	0.998926	 garbage_rate: 	 0.76532	3	
+
+	zone 	1	 idle_rate 	       1	 garbage_rate: 	0.421556	14	
+	zone 	5	 idle_rate 	0.998912	 garbage_rate: 	 0.52491	14	
+	zone 	9	 idle_rate 	0.999478	 garbage_rate: 	0.804245	3	
+	zone 	13	 idle_rate 	0.999463	 garbage_rate: 	0.842865	3	
+	zone 	21	 idle_rate 	       1	 garbage_rate: 	0.895166	14	
+	zone 	25	 idle_rate 	0.643947	 garbage_rate: 	0.706114	3	
+
+	zone 	2	 idle_rate 	       1	 garbage_rate: 	0.423021	14	
+	zone 	6	 idle_rate 	0.998448	 garbage_rate: 	0.526332	14	
+	zone 	10	 idle_rate 	0.778131	 garbage_rate: 	0.480734	3	
+	zone 	14	 idle_rate 	       1	 garbage_rate: 	0.850772	14	
+	zone 	22	 idle_rate 	       1	 garbage_rate: 	0.900026	14	
+	zone 	26	 idle_rate 	0.998651	 garbage_rate: 	0.772139	3	
+
+	zone 	3	 idle_rate 	       1	 garbage_rate: 	0.423079	14	
+	zone 	7	 idle_rate 	0.999608	 garbage_rate: 	0.525882	14	
+	zone 	11	 idle_rate 	0.736928	 garbage_rate: 	0.456549	3	
+	zone 	15	 idle_rate 	       1	 garbage_rate: 	0.863669	14	
+	zone 	23	 idle_rate 	       1	 garbage_rate: 	0.897531	14	
+	zone 	27	 idle_rate 	0.999637	 garbage_rate: 	0.756456	3	
+gc_count: 17
+
+space amplification: 2.83332
+22
+
+
+	zone 	0	 idle_rate 	       1	 garbage_rate: 	0.424893	14	
+	zone 	4	 idle_rate 	0.999434	 garbage_rate: 	0.527783	14	
+	zone 	8	 idle_rate 	0.760649	 garbage_rate: 	0.470607	3	
+	zone 	12	 idle_rate 	       1	 garbage_rate: 	0.852078	14	
+	zone 	20	 idle_rate 	       1	 garbage_rate: 	0.899939	14	
+	zone 	24	 idle_rate 	0.998926	 garbage_rate: 	0.774736	3	
+
+	zone 	1	 idle_rate 	       1	 garbage_rate: 	0.422644	14	
+	zone 	5	 idle_rate 	0.998912	 garbage_rate: 	0.525752	14	
+	zone 	9	 idle_rate 	0.999478	 garbage_rate: 	0.814255	3	
+	zone 	13	 idle_rate 	0.999463	 garbage_rate: 	0.847972	3	
+	zone 	21	 idle_rate 	       1	 garbage_rate: 	0.897951	14	
+	zone 	25	 idle_rate 	0.722275	 garbage_rate: 	0.685411	3	
+
+	zone 	2	 idle_rate 	       1	 garbage_rate: 	0.424138	14	
+	zone 	6	 idle_rate 	0.998448	 garbage_rate: 	0.527188	14	
+	zone 	10	 idle_rate 	0.856735	 garbage_rate: 	 0.54364	3	
+	zone 	14	 idle_rate 	       1	 garbage_rate: 	0.855632	14	
+	zone 	26	 idle_rate 	       1	 garbage_rate: 	0.780162	14	
+	zone 	30	 idle_rate 	0.0986247	 garbage_rate: 	0.904059	3	
+
+	zone 	3	 idle_rate 	       1	 garbage_rate: 	 0.42408	14	
+	zone 	7	 idle_rate 	0.999608	 garbage_rate: 	 0.52684	14	
+	zone 	11	 idle_rate 	0.818318	 garbage_rate: 	0.516931	3	
+	zone 	15	 idle_rate 	       1	 garbage_rate: 	0.867993	14	
+	zone 	23	 idle_rate 	       1	 garbage_rate: 	0.900012	14	
+	zone 	27	 idle_rate 	0.999637	 garbage_rate: 	0.766002	3	
+gc_count: 18
+
+space amplification: 2.84559
+23
+
+
+	zone 	0	 idle_rate 	       1	 garbage_rate: 	0.424907	14	
+	zone 	4	 idle_rate 	0.999434	 garbage_rate: 	0.527797	14	
+	zone 	8	 idle_rate 	0.762593	 garbage_rate: 	0.471753	3	
+	zone 	12	 idle_rate 	       1	 garbage_rate: 	0.852136	14	
+	zone 	20	 idle_rate 	       1	 garbage_rate: 	0.900012	14	
+	zone 	24	 idle_rate 	0.998926	 garbage_rate: 	0.774896	3	
+
+	zone 	1	 idle_rate 	       1	 garbage_rate: 	0.422644	14	
+	zone 	5	 idle_rate 	0.998912	 garbage_rate: 	0.525766	14	
+	zone 	9	 idle_rate 	0.999478	 garbage_rate: 	0.814444	3	
+	zone 	13	 idle_rate 	0.999463	 garbage_rate: 	0.848044	3	
+	zone 	21	 idle_rate 	       1	 garbage_rate: 	0.897966	14	
+	zone 	25	 idle_rate 	0.724031	 garbage_rate: 	0.684816	3	
+
+	zone 	2	 idle_rate 	       1	 garbage_rate: 	0.424167	14	
+	zone 	6	 idle_rate 	0.998448	 garbage_rate: 	0.527202	14	
+	zone 	10	 idle_rate 	0.856735	 garbage_rate: 	0.544641	3	
+	zone 	14	 idle_rate 	       1	 garbage_rate: 	 0.85569	14	
+	zone 	26	 idle_rate 	       1	 garbage_rate: 	0.780292	14	
+	zone 	30	 idle_rate 	0.0986247	 garbage_rate: 	0.904088	3	
+
+	zone 	3	 idle_rate 	       1	 garbage_rate: 	 0.42408	14	
+	zone 	7	 idle_rate 	0.999608	 garbage_rate: 	0.526869	14	
+	zone 	11	 idle_rate 	0.820044	 garbage_rate: 	0.517932	3	
+	zone 	15	 idle_rate 	       1	 garbage_rate: 	0.868022	14	
+	zone 	27	 idle_rate 	       1	 garbage_rate: 	 0.76577	14	
+	zone 	31	 idle_rate 	0.0996257	 garbage_rate: 	0.900432	3	
+gc_count: 19
+
+space amplification: 2.73246
+20
+
+
+	zone 	0	 idle_rate 	       1	 garbage_rate: 	0.425691	14	
+	zone 	4	 idle_rate 	0.999434	 garbage_rate: 	0.528348	14	
+	zone 	8	 idle_rate 	0.823889	 garbage_rate: 	0.521007	3	
+	zone 	12	 idle_rate 	       1	 garbage_rate: 	0.855821	14	
+	zone 	24	 idle_rate 	       1	 garbage_rate: 	 0.78067	14	
+	zone 	28	 idle_rate 	0.0989148	 garbage_rate: 	0.903276	3	
+
+	zone 	1	 idle_rate 	       1	 garbage_rate: 	0.423253	14	
+	zone 	5	 idle_rate 	0.998912	 garbage_rate: 	0.526636	14	
+	zone 	9	 idle_rate 	0.999478	 garbage_rate: 	0.821321	3	
+	zone 	13	 idle_rate 	0.999463	 garbage_rate: 	0.851628	3	
+	zone 	21	 idle_rate 	       1	 garbage_rate: 	0.900012	14	
+	zone 	25	 idle_rate 	0.784587	 garbage_rate: 	0.669191	3	
+
+	zone 	2	 idle_rate 	       1	 garbage_rate: 	0.424893	14	
+	zone 	6	 idle_rate 	0.998448	 garbage_rate: 	0.527971	14	
+	zone 	10	 idle_rate 	0.922513	 garbage_rate: 	0.593474	3	
+	zone 	14	 idle_rate 	       1	 garbage_rate: 	0.858737	14	
+	zone 	26	 idle_rate 	       1	 garbage_rate: 	0.786676	14	
+	zone 	30	 idle_rate 	0.0986247	 garbage_rate: 	0.905974	3	
+
+	zone 	3	 idle_rate 	       1	 garbage_rate: 	0.424878	14	
+	zone 	7	 idle_rate 	0.999608	 garbage_rate: 	0.527623	14	
+	zone 	11	 idle_rate 	0.876813	 garbage_rate: 	0.565155	3	
+	zone 	15	 idle_rate 	       1	 garbage_rate: 	0.871141	14	
+	zone 	27	 idle_rate 	       1	 garbage_rate: 	0.772574	14	
+	zone 	31	 idle_rate 	0.0996257	 garbage_rate: 	 0.90226	3	
+gc_count: 20
+
+space amplification: 2.71238
+21
+
+
+	zone 	0	 idle_rate 	       1	 garbage_rate: 	0.432727	14	
+	zone 	4	 idle_rate 	0.999434	 garbage_rate: 	 0.53492	14	
+	zone 	8	 idle_rate 	0.999304	 garbage_rate: 	0.793379	3	
+	zone 	12	 idle_rate 	       1	 garbage_rate: 	0.886722	14	
+	zone 	24	 idle_rate 	       1	 garbage_rate: 	0.837758	14	
+	zone 	28	 idle_rate 	0.592096	 garbage_rate: 	0.700702	3	
+
+	zone 	1	 idle_rate 	       1	 garbage_rate: 	0.430551	14	
+	zone 	5	 idle_rate 	0.998912	 garbage_rate: 	0.533267	14	
+	zone 	9	 idle_rate 	0.999478	 garbage_rate: 	0.876959	14	
+	zone 	13	 idle_rate 	0.999463	 garbage_rate: 	0.883095	14	
+	zone 	17	 idle_rate 	 0.54525	 garbage_rate: 	0.314763	3	
+	zone 	25	 idle_rate 	0.999391	 garbage_rate: 	0.697931	3	
+
+	zone 	2	 idle_rate 	       1	 garbage_rate: 	0.432045	14	
+	zone 	6	 idle_rate 	0.998448	 garbage_rate: 	0.534906	14	
+	zone 	10	 idle_rate 	 0.99942	 garbage_rate: 	 0.80394	3	
+	zone 	14	 idle_rate 	       1	 garbage_rate: 	0.889726	14	
+	zone 	26	 idle_rate 	       1	 garbage_rate: 	0.839905	14	
+	zone 	30	 idle_rate 	0.697075	 garbage_rate: 	0.671019	3	
+
+	zone 	3	 idle_rate 	       1	 garbage_rate: 	0.432248	14	
+	zone 	7	 idle_rate 	0.999608	 garbage_rate: 	0.534587	14	
+	zone 	11	 idle_rate 	0.999826	 garbage_rate: 	0.799864	3	
+	zone 	15	 idle_rate 	       1	 garbage_rate: 	0.900041	14	
+	zone 	27	 idle_rate 	       1	 garbage_rate: 	0.827429	14	
+	zone 	31	 idle_rate 	0.607692	 garbage_rate: 	 0.70031	3	
+gc_count: 21
+
+space amplification: 2.90945
+15
+
+
+	zone 	0	 idle_rate 	       1	 garbage_rate: 	0.435324	14	
+	zone 	4	 idle_rate 	0.999434	 garbage_rate: 	0.537546	14	
+	zone 	8	 idle_rate 	0.999304	 garbage_rate: 	0.831317	3	
+	zone 	12	 idle_rate 	       1	 garbage_rate: 	0.897052	14	
+	zone 	24	 idle_rate 	       1	 garbage_rate: 	 0.85569	14	
+	zone 	28	 idle_rate 	0.896863	 garbage_rate: 	0.627437	3	
+
+	zone 	1	 idle_rate 	       1	 garbage_rate: 	0.433568	14	
+	zone 	5	 idle_rate 	0.998912	 garbage_rate: 	0.535907	14	
+	zone 	9	 idle_rate 	0.999478	 garbage_rate: 	0.893091	14	
+	zone 	13	 idle_rate 	0.999463	 garbage_rate: 	0.893875	14	
+	zone 	17	 idle_rate 	 0.84671	 garbage_rate: 	 0.53846	3	
+	zone 	25	 idle_rate 	0.999391	 garbage_rate: 	0.738742	3	
+
+	zone 	2	 idle_rate 	       1	 garbage_rate: 	0.435324	14	
+	zone 	6	 idle_rate 	0.998448	 garbage_rate: 	0.537982	14	
+	zone 	10	 idle_rate 	 0.99942	 garbage_rate: 	0.838643	3	
+	zone 	14	 idle_rate 	       1	 garbage_rate: 	0.900041	14	
+	zone 	26	 idle_rate 	       1	 garbage_rate: 	0.857126	14	
+	zone 	30	 idle_rate 	0.994966	 garbage_rate: 	0.608345	3	
+
+	zone 	3	 idle_rate 	       1	 garbage_rate: 	0.434947	14	
+	zone 	7	 idle_rate 	0.999608	 garbage_rate: 	0.537459	14	
+	zone 	11	 idle_rate 	0.999826	 garbage_rate: 	0.834262	3	
+	zone 	27	 idle_rate 	       1	 garbage_rate: 	0.845012	14	
+	zone 	31	 idle_rate 	0.998549	 garbage_rate: 	0.543103	3	
+gc_count: 22
+
+space amplification: 3.06763
+14
+
+
+	zone 	0	 idle_rate 	       1	 garbage_rate: 	0.436165	14	
+	zone 	4	 idle_rate 	0.999434	 garbage_rate: 	0.538446	14	
+	zone 	8	 idle_rate 	0.999304	 garbage_rate: 	0.841139	3	
+	zone 	12	 idle_rate 	       1	 garbage_rate: 	0.900055	14	
+	zone 	24	 idle_rate 	       1	 garbage_rate: 	0.860681	14	
+	zone 	28	 idle_rate 	0.994705	 garbage_rate: 	0.608606	3	
+
+	zone 	1	 idle_rate 	       1	 garbage_rate: 	0.434352	14	
+	zone 	5	 idle_rate 	0.998912	 garbage_rate: 	0.536836	14	
+	zone 	9	 idle_rate 	0.999478	 garbage_rate: 	0.897328	14	
+	zone 	13	 idle_rate 	0.999463	 garbage_rate: 	0.897197	14	
+	zone 	17	 idle_rate 	0.940648	 garbage_rate: 	0.613278	3	
+	zone 	25	 idle_rate 	0.999391	 garbage_rate: 	0.749318	3	
+
+	zone 	2	 idle_rate 	       1	 garbage_rate: 	 0.43631	14	
+	zone 	6	 idle_rate 	0.998448	 garbage_rate: 	0.538809	14	
+	zone 	10	 idle_rate 	 0.99942	 garbage_rate: 	0.847435	3	
+	zone 	18	 idle_rate 	 0.19368	 garbage_rate: 	0.0351816	3	
+	zone 	26	 idle_rate 	       1	 garbage_rate: 	0.861363	14	
+	zone 	30	 idle_rate 	       1	 garbage_rate: 	0.648256	3	
+
+	zone 	3	 idle_rate 	       1	 garbage_rate: 	0.435803	14	
+	zone 	7	 idle_rate 	0.999608	 garbage_rate: 	0.538373	14	
+	zone 	11	 idle_rate 	0.999826	 garbage_rate: 	0.843358	14	
+	zone 	15	 idle_rate 	0.0919655	 garbage_rate: 	0.030365	3	
+	zone 	27	 idle_rate 	       1	 garbage_rate: 	0.850511	14	
+	zone 	31	 idle_rate 	0.998549	 garbage_rate: 	0.590674	3	
+gc_count: 23
+
+space amplification: 2.45985
+12
+
+
+	zone 	0	 idle_rate 	       1	 garbage_rate: 	 0.43676	14	
+	zone 	4	 idle_rate 	0.999434	 garbage_rate: 	0.538939	14	
+	zone 	8	 idle_rate 	0.999304	 garbage_rate: 	0.846376	3	
+	zone 	16	 idle_rate 	0.148155	 garbage_rate: 	0.0152043	3	
+	zone 	24	 idle_rate 	       1	 garbage_rate: 	0.863292	14	
+	zone 	28	 idle_rate 	       1	 garbage_rate: 	0.633632	3	
+
+	zone 	1	 idle_rate 	       1	 garbage_rate: 	0.435106	14	
+	zone 	5	 idle_rate 	0.998912	 garbage_rate: 	0.537329	14	
+	zone 	9	 idle_rate 	0.999478	 garbage_rate: 	0.900012	14	
+	zone 	13	 idle_rate 	0.999463	 garbage_rate: 	0.898938	14	
+	zone 	17	 idle_rate 	0.997055	 garbage_rate: 	0.659137	3	
+	zone 	25	 idle_rate 	0.999391	 garbage_rate: 	0.755179	3	
+
+	zone 	2	 idle_rate 	       1	 garbage_rate: 	0.436891	14	
+	zone 	6	 idle_rate 	0.998448	 garbage_rate: 	0.539229	14	
+	zone 	10	 idle_rate 	 0.99942	 garbage_rate: 	0.852237	3	
+	zone 	18	 idle_rate 	0.249086	 garbage_rate: 	0.0647632	3	
+	zone 	26	 idle_rate 	       1	 garbage_rate: 	0.863742	14	
+	zone 	30	 idle_rate 	       1	 garbage_rate: 	0.665825	3	
+
+	zone 	3	 idle_rate 	       1	 garbage_rate: 	0.436354	14	
+	zone 	7	 idle_rate 	0.999608	 garbage_rate: 	0.538809	14	
+	zone 	11	 idle_rate 	0.999826	 garbage_rate: 	0.848146	14	
+	zone 	15	 idle_rate 	0.149388	 garbage_rate: 	0.0581912	3	
+	zone 	27	 idle_rate 	       1	 garbage_rate: 	0.853122	14	
+	zone 	31	 idle_rate 	0.998549	 garbage_rate: 	0.610013	3	
+gc_count: 24
+
+space amplification: 2.21724
+9
+
+
+	zone 	0	 idle_rate 	       1	 garbage_rate: 	0.437123	14	
+	zone 	4	 idle_rate 	0.999434	 garbage_rate: 	0.539447	14	
+	zone 	8	 idle_rate 	0.999304	 garbage_rate: 	0.850046	3	
+	zone 	16	 idle_rate 	0.187282	 garbage_rate: 	0.0333101	3	
+	zone 	24	 idle_rate 	       1	 garbage_rate: 	0.865425	14	
+	zone 	28	 idle_rate 	       1	 garbage_rate: 	0.650316	3	
+
+	zone 	1	 idle_rate 	       1	 garbage_rate: 	0.435585	14	
+	zone 	5	 idle_rate 	0.998912	 garbage_rate: 	0.537604	14	
+	zone 	13	 idle_rate 	0.999463	 garbage_rate: 	0.900012	14	
+	zone 	17	 idle_rate 	       1	 garbage_rate: 	0.683177	14	
+	zone 	21	 idle_rate 	0.134735	 garbage_rate: 	0.0110115	3	
+	zone 	25	 idle_rate 	       1	 garbage_rate: 	0.758473	3	
+
+	zone 	2	 idle_rate 	       1	 garbage_rate: 	0.437369	14	
+	zone 	6	 idle_rate 	0.998448	 garbage_rate: 	0.539534	14	
+	zone 	10	 idle_rate 	 0.99942	 garbage_rate: 	0.855748	3	
+	zone 	18	 idle_rate 	0.296498	 garbage_rate: 	0.0893251	3	
+	zone 	26	 idle_rate 	       1	 garbage_rate: 	 0.86586	14	
+	zone 	30	 idle_rate 	       1	 garbage_rate: 	0.677852	3	
+
+	zone 	3	 idle_rate 	       1	 garbage_rate: 	0.436688	14	
+	zone 	7	 idle_rate 	0.999608	 garbage_rate: 	0.539012	14	
+	zone 	11	 idle_rate 	0.999826	 garbage_rate: 	0.851744	14	
+	zone 	15	 idle_rate 	0.189937	 garbage_rate: 	0.0807945	3	
+	zone 	27	 idle_rate 	       1	 garbage_rate: 	0.854791	14	
+	zone 	31	 idle_rate 	0.998549	 garbage_rate: 	0.622273	3	
+gc_count: 25
+
+space amplification: 1.99105
+13
+
+
+	zone 	0	 idle_rate 	       1	 garbage_rate: 	0.443332	14	
+	zone 	4	 idle_rate 	0.999434	 garbage_rate: 	0.545932	14	
+	zone 	8	 idle_rate 	0.999304	 garbage_rate: 	0.897966	3	
+	zone 	16	 idle_rate 	0.962454	 garbage_rate: 	 0.57357	3	
+	zone 	24	 idle_rate 	       1	 garbage_rate: 	0.895775	14	
+	zone 	28	 idle_rate 	       1	 garbage_rate: 	 0.79023	3	
+
+	zone 	1	 idle_rate 	       1	 garbage_rate: 	0.442795	14	
+	zone 	5	 idle_rate 	0.998912	 garbage_rate: 	0.543756	14	
+	zone 	9	 idle_rate 	0.00355443	 garbage_rate: 	2.90158e-05	3	
+	zone 	17	 idle_rate 	       1	 garbage_rate: 	0.833116	14	
+	zone 	21	 idle_rate 	0.998984	 garbage_rate: 	 0.55999	3	
+	zone 	25	 idle_rate 	       1	 garbage_rate: 	0.816533	3	
+
+	zone 	2	 idle_rate 	       1	 garbage_rate: 	0.444667	14	
+	zone 	6	 idle_rate 	0.998448	 garbage_rate: 	0.545598	14	
+	zone 	10	 idle_rate 	 0.99942	 garbage_rate: 	0.900012	14	
+	zone 	14	 idle_rate 	0.101294	 garbage_rate: 	0.0331215	3	
+	zone 	18	 idle_rate 	0.999463	 garbage_rate: 	0.646863	3	
+	zone 	26	 idle_rate 	       1	 garbage_rate: 	0.895862	14	
+	zone 	30	 idle_rate 	       1	 garbage_rate: 	0.799994	3	
+
+	zone 	3	 idle_rate 	       1	 garbage_rate: 	0.443361	14	
+	zone 	7	 idle_rate 	0.999608	 garbage_rate: 	0.545395	14	
+	zone 	11	 idle_rate 	0.999826	 garbage_rate: 	0.897821	14	
+	zone 	15	 idle_rate 	0.940779	 garbage_rate: 	 0.62059	3	
+	zone 	27	 idle_rate 	       1	 garbage_rate: 	0.885054	14	
+	zone 	31	 idle_rate 	0.998549	 garbage_rate: 	0.749768	3	
+gc_count: 26
+
+space amplification: 2.48679
+10
+
+
+	zone 	0	 idle_rate 	       1	 garbage_rate: 	 0.44368	14	
+	zone 	4	 idle_rate 	0.999434	 garbage_rate: 	0.546208	14	
+	zone 	8	 idle_rate 	0.999304	 garbage_rate: 	0.900026	14	
+	zone 	12	 idle_rate 	0.00322075	 garbage_rate: 	4.35237e-05	3	
+	zone 	16	 idle_rate 	0.998578	 garbage_rate: 	0.606444	3	
+	zone 	24	 idle_rate 	       1	 garbage_rate: 	0.896907	14	
+	zone 	28	 idle_rate 	       1	 garbage_rate: 	0.794438	3	
+
+	zone 	1	 idle_rate 	       1	 garbage_rate: 	0.443216	14	
+	zone 	5	 idle_rate 	0.998912	 garbage_rate: 	0.544206	14	
+	zone 	9	 idle_rate 	0.0455693	 garbage_rate: 	0.0102281	3	
+	zone 	17	 idle_rate 	       1	 garbage_rate: 	 0.83712	14	
+	zone 	21	 idle_rate 	0.998984	 garbage_rate: 	 0.58181	3	
+	zone 	25	 idle_rate 	       1	 garbage_rate: 	0.818883	3	
+
+	zone 	2	 idle_rate 	       1	 garbage_rate: 	0.444957	14	
+	zone 	6	 idle_rate 	0.998448	 garbage_rate: 	0.545903	14	
+	zone 	14	 idle_rate 	0.244385	 garbage_rate: 	0.0567984	3	
+	zone 	18	 idle_rate 	0.999463	 garbage_rate: 	0.660907	3	
+	zone 	26	 idle_rate 	       1	 garbage_rate: 	0.897067	14	
+	zone 	30	 idle_rate 	       1	 garbage_rate: 	0.803984	3	
+
+	zone 	3	 idle_rate 	       1	 garbage_rate: 	0.443622	14	
+	zone 	7	 idle_rate 	0.999608	 garbage_rate: 	0.545685	14	
+	zone 	11	 idle_rate 	0.999826	 garbage_rate: 	0.899939	14	
+	zone 	15	 idle_rate 	 0.97876	 garbage_rate: 	0.651593	3	
+	zone 	27	 idle_rate 	       1	 garbage_rate: 	0.886302	14	
+	zone 	31	 idle_rate 	0.998549	 garbage_rate: 	0.754178	3	
+gc_count: 27
+
+space amplification: 2.22946
+8
+
+
+	zone 	0	 idle_rate 	       1	 garbage_rate: 	 0.44368	14	
+	zone 	4	 idle_rate 	0.999434	 garbage_rate: 	0.546208	14	
+	zone 	12	 idle_rate 	0.104776	 garbage_rate: 	0.000841458	3	
+	zone 	16	 idle_rate 	0.998578	 garbage_rate: 	0.607068	3	
+	zone 	24	 idle_rate 	       1	 garbage_rate: 	0.896936	14	
+	zone 	28	 idle_rate 	       1	 garbage_rate: 	0.794481	3	
+
+	zone 	1	 idle_rate 	       1	 garbage_rate: 	0.443216	14	
+	zone 	5	 idle_rate 	0.998912	 garbage_rate: 	0.544206	14	
+	zone 	9	 idle_rate 	0.0455693	 garbage_rate: 	0.0103586	3	
+	zone 	17	 idle_rate 	       1	 garbage_rate: 	0.837163	14	
+	zone 	21	 idle_rate 	0.998984	 garbage_rate: 	0.582187	3	
+	zone 	25	 idle_rate 	       1	 garbage_rate: 	0.818912	3	
+
+	zone 	2	 idle_rate 	       1	 garbage_rate: 	0.444957	14	
+	zone 	6	 idle_rate 	0.998448	 garbage_rate: 	0.545903	14	
+	zone 	14	 idle_rate 	0.245996	 garbage_rate: 	0.0572627	3	
+	zone 	18	 idle_rate 	0.999463	 garbage_rate: 	0.661328	3	
+	zone 	26	 idle_rate 	       1	 garbage_rate: 	 0.89711	14	
+	zone 	30	 idle_rate 	       1	 garbage_rate: 	0.804042	3	
+
+	zone 	3	 idle_rate 	       1	 garbage_rate: 	0.443622	14	
+	zone 	7	 idle_rate 	0.999608	 garbage_rate: 	0.545685	14	
+	zone 	11	 idle_rate 	0.999826	 garbage_rate: 	0.900012	14	
+	zone 	15	 idle_rate 	 0.97876	 garbage_rate: 	0.652246	3	
+	zone 	27	 idle_rate 	       1	 garbage_rate: 	0.886316	14	
+	zone 	31	 idle_rate 	0.998549	 garbage_rate: 	0.754265	3	
+gc_count: 28
+
+space amplification: 2.16221
+11
+
+
+	zone 	0	 idle_rate 	       1	 garbage_rate: 	0.444406	14	
+	zone 	4	 idle_rate 	0.999434	 garbage_rate: 	0.546773	14	
+	zone 	12	 idle_rate 	0.201819	 garbage_rate: 	0.0405496	3	
+	zone 	16	 idle_rate 	0.998578	 garbage_rate: 	0.652289	3	
+	zone 	24	 idle_rate 	       1	 garbage_rate: 	0.900012	14	
+	zone 	28	 idle_rate 	       1	 garbage_rate: 	0.804027	3	
+
+	zone 	1	 idle_rate 	       1	 garbage_rate: 	0.444275	14	
+	zone 	5	 idle_rate 	0.998912	 garbage_rate: 	0.544844	14	
+	zone 	9	 idle_rate 	0.142569	 garbage_rate: 	0.0533745	3	
+	zone 	17	 idle_rate 	       1	 garbage_rate: 	0.846115	14	
+	zone 	21	 idle_rate 	0.998984	 garbage_rate: 	0.618297	3	
+	zone 	25	 idle_rate 	       1	 garbage_rate: 	0.823976	3	
+
+	zone 	2	 idle_rate 	       1	 garbage_rate: 	0.445523	14	
+	zone 	6	 idle_rate 	0.998448	 garbage_rate: 	0.546657	14	
+	zone 	14	 idle_rate 	0.341545	 garbage_rate: 	0.114612	3	
+	zone 	18	 idle_rate 	0.999463	 garbage_rate: 	0.688254	3	
+	zone 	26	 idle_rate 	       1	 garbage_rate: 	0.899881	14	
+	zone 	30	 idle_rate 	       1	 garbage_rate: 	0.812529	3	
+
+	zone 	3	 idle_rate 	       1	 garbage_rate: 	0.444478	14	
+	zone 	7	 idle_rate 	0.999608	 garbage_rate: 	0.546266	14	
+	zone 	15	 idle_rate 	       1	 garbage_rate: 	0.696306	14	
+	zone 	19	 idle_rate 	0.170178	 garbage_rate: 	0.0344272	3	
+	zone 	27	 idle_rate 	       1	 garbage_rate: 	0.889058	14	
+	zone 	31	 idle_rate 	       1	 garbage_rate: 	0.762259	3	
+gc_count: 29
+
+space amplification: 2.00461
+24
+
+
+	zone 	0	 idle_rate 	       1	 garbage_rate: 	 0.44442	14	
+	zone 	4	 idle_rate 	0.999434	 garbage_rate: 	0.546788	14	
+	zone 	12	 idle_rate 	0.207448	 garbage_rate: 	0.0430884	3	
+	zone 	16	 idle_rate 	0.998578	 garbage_rate: 	0.654451	3	
+	zone 	28	 idle_rate 	       1	 garbage_rate: 	 0.80439	14	
+	zone 	32	 idle_rate 	0.0999884	 garbage_rate: 	0.900113	3	
+
+	zone 	1	 idle_rate 	       1	 garbage_rate: 	0.444304	14	
+	zone 	5	 idle_rate 	0.998912	 garbage_rate: 	0.544873	14	
+	zone 	9	 idle_rate 	0.147342	 garbage_rate: 	0.0562906	3	
+	zone 	17	 idle_rate 	       1	 garbage_rate: 	0.846579	14	
+	zone 	21	 idle_rate 	0.998984	 garbage_rate: 	0.619908	3	
+	zone 	25	 idle_rate 	       1	 garbage_rate: 	0.824338	3	
+
+	zone 	2	 idle_rate 	       1	 garbage_rate: 	0.445523	14	
+	zone 	6	 idle_rate 	0.998448	 garbage_rate: 	0.546672	14	
+	zone 	14	 idle_rate 	0.347566	 garbage_rate: 	0.118486	3	
+	zone 	18	 idle_rate 	0.999463	 garbage_rate: 	 0.68956	3	
+	zone 	26	 idle_rate 	       1	 garbage_rate: 	0.900012	14	
+	zone 	30	 idle_rate 	       1	 garbage_rate: 	0.812892	3	
+
+	zone 	3	 idle_rate 	       1	 garbage_rate: 	0.444551	14	
+	zone 	7	 idle_rate 	0.999608	 garbage_rate: 	 0.54628	14	
+	zone 	15	 idle_rate 	       1	 garbage_rate: 	0.698091	14	
+	zone 	19	 idle_rate 	0.175241	 garbage_rate: 	0.0371112	3	
+	zone 	27	 idle_rate 	       1	 garbage_rate: 	0.889131	14	
+	zone 	31	 idle_rate 	       1	 garbage_rate: 	0.762825	3	
+gc_count: 30
+
+space amplification: 1.92412
+26
+
+
+	zone 	0	 idle_rate 	       1	 garbage_rate: 	0.447728	14	
+	zone 	4	 idle_rate 	0.999434	 garbage_rate: 	0.549443	14	
+	zone 	12	 idle_rate 	0.584465	 garbage_rate: 	0.291028	3	
+	zone 	16	 idle_rate 	0.998578	 garbage_rate: 	0.744037	3	
+	zone 	28	 idle_rate 	       1	 garbage_rate: 	0.834668	14	
+	zone 	32	 idle_rate 	0.0999884	 garbage_rate: 	0.910573	3	
+
+	zone 	1	 idle_rate 	       1	 garbage_rate: 	 0.44751	14	
+	zone 	5	 idle_rate 	0.998912	 garbage_rate: 	0.547891	14	
+	zone 	9	 idle_rate 	0.535646	 garbage_rate: 	0.304056	3	
+	zone 	17	 idle_rate 	       1	 garbage_rate: 	 0.87455	14	
+	zone 	21	 idle_rate 	0.998984	 garbage_rate: 	 0.70311	3	
+	zone 	25	 idle_rate 	       1	 garbage_rate: 	0.843939	3	
+
+	zone 	2	 idle_rate 	       1	 garbage_rate: 	0.448468	14	
+	zone 	6	 idle_rate 	0.998448	 garbage_rate: 	0.549283	14	
+	zone 	14	 idle_rate 	0.751857	 garbage_rate: 	0.406482	3	
+	zone 	18	 idle_rate 	0.999463	 garbage_rate: 	0.760388	3	
+	zone 	30	 idle_rate 	       1	 garbage_rate: 	0.842096	14	
+	zone 	34	 idle_rate 	0.0999884	 garbage_rate: 	0.909877	3	
+
+	zone 	3	 idle_rate 	       1	 garbage_rate: 	0.447597	14	
+	zone 	7	 idle_rate 	0.999608	 garbage_rate: 	0.548819	14	
+	zone 	15	 idle_rate 	       1	 garbage_rate: 	0.784195	14	
+	zone 	19	 idle_rate 	 0.55719	 garbage_rate: 	0.280757	3	
+	zone 	27	 idle_rate 	       1	 garbage_rate: 	0.900012	14	
+	zone 	31	 idle_rate 	       1	 garbage_rate: 	0.795729	3	
+gc_count: 31
+
+space amplification: 2.3361
+27
+
+
+	zone 	0	 idle_rate 	       1	 garbage_rate: 	 0.45166	14	
+	zone 	4	 idle_rate 	0.999434	 garbage_rate: 	0.552446	14	
+	zone 	12	 idle_rate 	0.999898	 garbage_rate: 	0.653435	3	
+	zone 	16	 idle_rate 	0.998578	 garbage_rate: 	0.805841	3	
+	zone 	28	 idle_rate 	       1	 garbage_rate: 	0.863045	14	
+	zone 	32	 idle_rate 	0.174037	 garbage_rate: 	0.870967	3	
+
+	zone 	1	 idle_rate 	       1	 garbage_rate: 	0.451297	14	
+	zone 	5	 idle_rate 	0.998912	 garbage_rate: 	0.551198	14	
+	zone 	9	 idle_rate 	 0.99955	 garbage_rate: 	0.684773	14	
+	zone 	13	 idle_rate 	0.0499507	 garbage_rate: 	0.0128105	3	
+	zone 	17	 idle_rate 	       1	 garbage_rate: 	0.900026	14	
+	zone 	21	 idle_rate 	0.998984	 garbage_rate: 	 0.76709	3	
+	zone 	25	 idle_rate 	       1	 garbage_rate: 	0.864511	3	
+
+	zone 	2	 idle_rate 	       1	 garbage_rate: 	0.452284	14	
+	zone 	6	 idle_rate 	0.998448	 garbage_rate: 	 0.55262	14	
+	zone 	14	 idle_rate 	0.998796	 garbage_rate: 	0.699324	3	
+	zone 	18	 idle_rate 	0.999463	 garbage_rate: 	0.815474	3	
+	zone 	30	 idle_rate 	       1	 garbage_rate: 	0.867848	14	
+	zone 	34	 idle_rate 	0.379715	 garbage_rate: 	0.773517	3	
+
+	zone 	3	 idle_rate 	       1	 garbage_rate: 	0.451123	14	
+	zone 	7	 idle_rate 	0.999608	 garbage_rate: 	 0.55217	14	
+	zone 	15	 idle_rate 	       1	 garbage_rate: 	0.841313	14	
+	zone 	19	 idle_rate 	0.999913	 garbage_rate: 	 0.65551	3	
+	zone 	31	 idle_rate 	       1	 garbage_rate: 	0.828256	14	
+	zone 	35	 idle_rate 	0.151985	 garbage_rate: 	 0.87265	3	
+gc_count: 32
+
+space amplification: 2.64926
+17
+
+running time686s
+
+744522 743038 759069 742519 
+IO count: 3334199
+hit/query: 4267673
+zalp_wc:0 zalp:1 cflru:0 lru:0
+
+
+	zone 	0	 idle_rate 	       1	 garbage_rate: 	0.453256	14	
+	zone 	4	 idle_rate 	0.999434	 garbage_rate: 	0.553853	14	
+	zone 	12	 idle_rate 	       1	 garbage_rate: 	0.720694	3	
+	zone 	16	 idle_rate 	       1	 garbage_rate: 	0.826616	3	
+	zone 	28	 idle_rate 	       1	 garbage_rate: 	0.874173	14	
+	zone 	32	 idle_rate 	0.428404	 garbage_rate: 	0.760344	3	
+
+	zone 	1	 idle_rate 	       1	 garbage_rate: 	 0.45314	14	
+	zone 	5	 idle_rate 	0.998912	 garbage_rate: 	0.553012	14	
+	zone 	9	 idle_rate 	 0.99955	 garbage_rate: 	 0.75885	14	
+	zone 	13	 idle_rate 	0.299457	 garbage_rate: 	0.146196	3	
+	zone 	21	 idle_rate 	       1	 garbage_rate: 	0.790317	14	
+	zone 	25	 idle_rate 	       1	 garbage_rate: 	0.873012	14	
+	zone 	29	 idle_rate 	0.0989583	 garbage_rate: 	 0.90995	3	
+
+	zone 	2	 idle_rate 	       1	 garbage_rate: 	0.453952	14	
+	zone 	6	 idle_rate 	0.998448	 garbage_rate: 	0.553955	14	
+	zone 	14	 idle_rate 	0.998796	 garbage_rate: 	0.747838	3	
+	zone 	18	 idle_rate 	0.999463	 garbage_rate: 	0.835002	3	
+	zone 	30	 idle_rate 	       1	 garbage_rate: 	0.878047	14	
+	zone 	34	 idle_rate 	0.632007	 garbage_rate: 	0.696553	3	
+
+	zone 	3	 idle_rate 	       1	 garbage_rate: 	0.452994	14	
+	zone 	7	 idle_rate 	0.999608	 garbage_rate: 	0.553824	14	
+	zone 	15	 idle_rate 	       1	 garbage_rate: 	 0.86055	14	
+	zone 	19	 idle_rate 	0.999913	 garbage_rate: 	0.727963	3	
+	zone 	31	 idle_rate 	       1	 garbage_rate: 	 0.84111	14	
+	zone 	35	 idle_rate 	0.389914	 garbage_rate: 	0.768033	3	
+gc_count: 32
+
+space amplification: 2.74519

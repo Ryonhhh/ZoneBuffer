@@ -5,9 +5,9 @@
 #define PAGE_SIZE 4096
 #define CLUSTER_NUM 4
 #define HC_LV 3
-#define DEF_BUF_SIZE 1024
-#define WORK_REG_SIZE 768
-#define MAX_ZONE_NUM 160
+#define DEF_BUF_SIZE 2048
+#define WORK_REG_SIZE 1536
+#define MAX_ZONE_NUM 200
 
 #define CAPACITY 0x1dc724000 //availible sector(512 byte) number
 //blkzone capacity /dev/nvme1n2

@@ -22,8 +22,6 @@ class BufferManager {
 
     void write_page(PAGE_ID page_id, const Frame::sptr &frame);
 
-    FRAME_ID fix_page(PAGE_ID page_id);
-
     FRAME_ID fix_page(bool is_write, PAGE_ID page_id);
 
     void fix_new_page(PAGE_ID page_id, const Frame::sptr &frame);
@@ -39,14 +37,15 @@ class BufferManager {
     std::string output; 
 
    private:
-    bool zalp_wc = 1;
+    bool zalp_wc = 1, wh_only = 1;
     bool zalp = 0;
     bool cflru = 0;
     bool lru = 0;
     enum WC{cold, warm, hot};
-    int cluster_num;
     Frame buffer[DEF_BUF_SIZE]{};
     int cluster_flag[DEF_BUF_SIZE]{};
+    int write_count[DEF_BUF_SIZE]{};
+    int read_count[DEF_BUF_SIZE]{};
     ZNSController *zdsm;
     int free_frames_num;
     // Hash Table
@@ -82,7 +81,7 @@ class BufferManager {
 
     void inc_hit_count();
 
-    int buffer_count[100000]{};
+    int *flush_count;
 };
 }  // namespace zns
 

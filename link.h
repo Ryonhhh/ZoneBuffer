@@ -3,14 +3,14 @@
 
 #include <cstring>
 #include <fstream>
-#include <sstream>
 #include <iostream>
+#include <sstream>
 #include <vector>
 
 #include "include/zBuffer.h"
 
-#define load_db_file "../YCSB-Gen/dataset.dat"
-#define test_db_file "../YCSB-Gen/query.dat"
+#define load_db_file "/home/wht/YCSB-Gen/dataset.dat"
+#define test_db_file "/home/wht/YCSB-Gen/query.dat"
 #define INSERT 0
 #define SCAN 1
 #define UPDATE 2
@@ -55,7 +55,7 @@ class Instruction {
                 opt = "READ";
                 break;
         }
-        //os << "Instruction(" << opt << ", " << i.page_id << ")";
+        // os << "Instruction(" << opt << ", " << i.page_id << ")";
         return os;
     }
 
@@ -73,6 +73,11 @@ class Instruction {
 
     static Instruction::vector read_instructions(const std::string &filename) {
         std::ifstream test_file(filename);
+        if (!test_file) {
+            test_file.close();
+            test_file.clear();
+            test_file.open(filename);
+        }
         assert(test_file.is_open());
         std::string line;
         auto ins_vector = std::make_shared<std::vector<Instruction>>();

@@ -4,8 +4,10 @@
 #include <assert.h>
 #include <stdlib.h>
 #include <time.h>
-#include </usr/include/libnvme.h>
-#include "/home/wht/libzbd/include/libzbd/zbd.h"
+#include <libnvme.h>
+#include <string.h>
+//#include "/home/wht/libzbd/include/libzbd/zbd.h"
+#include <libzbd/zbd.h>
 
 #include <cstdlib>
 #include <iostream>
@@ -20,8 +22,6 @@ struct Frame {
   typedef std::shared_ptr<Frame> sptr;
   char field[FRAME_SIZE] = {};
 };
-
-
 
 class BCB {
  public:

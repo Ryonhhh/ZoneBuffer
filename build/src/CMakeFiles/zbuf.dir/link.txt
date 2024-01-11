@@ -1,0 +1,2 @@
+/usr/bin/ar qc libzbuf.a CMakeFiles/zbuf.dir/common.cpp.o CMakeFiles/zbuf.dir/datastructure.cpp.o CMakeFiles/zbuf.dir/zalp.cpp.o CMakeFiles/zbuf.dir/zBuffer.cpp.o CMakeFiles/zbuf.dir/zController.cpp.o
+/usr/bin/ranlib libzbuf.a

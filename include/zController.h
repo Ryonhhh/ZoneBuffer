@@ -24,24 +24,29 @@ class ZNSController {
 
     std::string output;
 
+    int gc_count = 0;
+
+    int cluster_num;
+
     ZONE_ID read_page_p(PAGE_ID page_id, Frame *frm);
 
-    ZONE_ID select_write_zone(PAGE_ID page_id, int cluster_size,
-                              int cluster_num);
+    ZONE_ID select_write_zone(int cf, int cluster_size);
 
-    int write_page_p(PAGE_ID page_id, Frame *frm, int cluster_num);
+    int write_page_p(int cf, PAGE_ID page_id, char const *write_buffer);
 
-    int write_cluster_p(int cf, char *write_buffer, PAGE_ID *page_list,
-                        int cluster_size, int cluster_num);
+    int write_cluster_p(int cf, char const *write_buffer, PAGE_ID *page_list,
+                        int cluster_size);
 
     int write_cluster_a(int cf, char *write_buffer, PAGE_ID *page_list,
-                        int cluster_size, int cluster_num);
+                        int cluster_size);
 
-    void create_new_page(PAGE_ID page_id, Frame *frm, int cluster_num);
+    void create_new_page(PAGE_ID page_id, char *write_buffer);
 
     void get_gc_info();
 
-    void print_gc_info(int cluster_num);
+    void print_gc_info();
+
+    void garbage_collection_detect();
 
     void io_count_clear();
 
@@ -53,6 +58,7 @@ class ZNSController {
         off_st ofst;
         off_st wp;
         int cond;
+        int valid_page;
         double idle_rate;
         double gc_rate;
     } ZoneDesc;
@@ -87,6 +93,12 @@ class ZNSController {
 
     int io_count;
 
+    double valid_data = 0, real_data = 0;
+
+    int used_zone = 0;
+
+    bool zone_used[MAX_ZONE_NUM]{};
+
     void open_file();
 
     void close_file();
@@ -113,9 +125,11 @@ class ZNSController {
 
     void set_page_addr(PAGE_ID page_id, off_st addr);
 
-    void set_valid(PAGE_ID page_id, bool is_valid);
+    void set_valid(off_st page_addr, bool is_valid);
 
-    bool get_valid(PAGE_ID page_id);
+    bool get_valid(off_st page_addr);
+
+    void garbage_collection(ZONE_ID id);
 
     void inc_io_count();
 

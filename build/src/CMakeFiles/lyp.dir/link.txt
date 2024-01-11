@@ -1,0 +1,2 @@
+/usr/bin/ar qc liblyp.a CMakeFiles/lyp.dir/common.cpp.o CMakeFiles/lyp.dir/zalp.cpp.o CMakeFiles/lyp.dir/zBuffer.cpp.o CMakeFiles/lyp.dir/zController.cpp.o
+/usr/bin/ranlib liblyp.a
