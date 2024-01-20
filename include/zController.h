@@ -9,6 +9,7 @@
 #include <fstream>
 #include <iomanip>
 #include <iostream>
+#include <errno.h>
 
 #include "common.h"
 #include "parameter.h"
@@ -28,7 +29,9 @@ class ZNSController {
 
     int cluster_num;
 
-    ZONE_ID read_page_p(PAGE_ID page_id, Frame *frm);
+    int *zone_select_ptr;
+
+    ZONE_ID read_page_p(PAGE_ID page_id, char *frm);
 
     ZONE_ID select_write_zone(int cf, int cluster_size);
 
@@ -37,10 +40,7 @@ class ZNSController {
     int write_cluster_p(int cf, char const *write_buffer, PAGE_ID *page_list,
                         int cluster_size);
 
-    int write_cluster_a(int cf, char *write_buffer, PAGE_ID *page_list,
-                        int cluster_size);
-
-    void create_new_page(PAGE_ID page_id, char *write_buffer);
+    void create_new_page(PAGE_ID page_id, char const *write_buffer);
 
     void get_gc_info();
 
@@ -59,6 +59,7 @@ class ZNSController {
         off_st wp;
         int cond;
         int valid_page;
+        int cf;
         double idle_rate;
         double gc_rate;
     } ZoneDesc;
@@ -106,8 +107,6 @@ class ZNSController {
     void init();
 
     void reset_all();
-
-    void write_log();
 
     void open_zone(ZONE_ID zone_id);
 

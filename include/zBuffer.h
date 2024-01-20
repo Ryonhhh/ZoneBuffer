@@ -12,19 +12,18 @@ using std::list;
 namespace zns {
 class BufferManager {
    public:
-    typedef std::shared_ptr<BufferManager> sptr;
 
     BufferManager();
 
     ~BufferManager();
 
-    Frame::sptr read_page(PAGE_ID page_id);
+    char *read_page(PAGE_ID page_id);
 
-    void write_page(PAGE_ID page_id, const Frame::sptr &frame);
+    void write_page(PAGE_ID page_id, char *frame);
 
     FRAME_ID fix_page(bool is_write, PAGE_ID page_id);
 
-    void fix_new_page(PAGE_ID page_id, const Frame::sptr &frame);
+    void fix_new_page(PAGE_ID page_id, char *frame);
 
     int get_free_frames_num();
 
@@ -36,17 +35,18 @@ class BufferManager {
 
     std::string output; 
 
+    ZNSController *zdsm;
+
    private:
-    bool zalp_wc = 1, wh_only = 1;
+    bool zalp_wc = 0, wh_only = 0;
     bool zalp = 0;
     bool cflru = 0;
-    bool lru = 0;
+    bool lru = 1;
     enum WC{cold, warm, hot};
-    Frame buffer[DEF_BUF_SIZE]{};
+    char *buffer[DEF_BUF_SIZE]{};
     int cluster_flag[DEF_BUF_SIZE]{};
     int write_count[DEF_BUF_SIZE]{};
     int read_count[DEF_BUF_SIZE]{};
-    ZNSController *zdsm;
     int free_frames_num;
     // Hash Table
     PAGE_ID frame_to_page[DEF_BUF_SIZE]{};

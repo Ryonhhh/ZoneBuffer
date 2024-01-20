@@ -8,12 +8,15 @@ using namespace zns;
 using namespace std;
 clock_t start_t, end_t;
 
-void db_bench(const BufferManager::sptr &bm, string bench_file) {
+void db_bench(BufferManager *bm, string bench_file) {
     auto ins_vector = Instruction::read_instructions(bench_file);
     int index = 0;
     for (auto &iter : *ins_vector) {
         // cout << std::endl << index++ << ": " << i << endl;
-        if (index % (ins_vector->size() / 10) == 0) std::cout << std::endl;
+        if (index % (ins_vector->size() / 10) == 0) {
+            std::cout << std::endl;
+            //bm->zdsm->print_gc_info();
+        }
         if (index % (ins_vector->size() / 100) == 0) std::cout << "#";
         index++;
         iter.execute(bm);
@@ -23,7 +26,7 @@ void db_bench(const BufferManager::sptr &bm, string bench_file) {
 
 int main() {
     srand((unsigned)time(NULL));
-    auto bm = make_shared<BufferManager>();
+    BufferManager *bm = new BufferManager();
     std::cout<<"start loading..."<<std::endl;
     db_bench(bm, load_db_file);
     bm->hit_count_clear();

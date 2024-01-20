@@ -7,9 +7,10 @@ typedef int DataType;
 typedef struct ListNode {
     DataType data;
     ListNode *next;
+    ListNode *prev;
 
-    ListNode() : data(-1), next(nullptr) {}
-    ListNode(DataType d) : data(d), next(nullptr) {}
+    ListNode() : data(-1), next(nullptr), prev(nullptr) {}
+    ListNode(DataType d) : data(d), next(nullptr), prev(nullptr) {}
 } ListNode;
 
 class List {

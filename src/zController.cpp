@@ -12,7 +12,7 @@ ZNSController::ZNSController() {
     struct tm *p;
     time(&timep);
     p = localtime(&timep);
-    output = "./output/" + std::to_string(p->tm_mon) + "_" +
+    output = "/home/wht/zalpBuffer/output/" + std::to_string(p->tm_mon) + "_" +
              std::to_string(p->tm_mday) + "_" + std::to_string(p->tm_hour) +
              "_" + std::to_string(p->tm_min);
     std::ofstream op(output);
@@ -21,7 +21,6 @@ ZNSController::ZNSController() {
 }
 
 ZNSController::~ZNSController() {
-    write_log();
     free(meta_page);
     free(pageid2addr);
     // close_file();
@@ -29,7 +28,7 @@ ZNSController::~ZNSController() {
 
 void ZNSController::init() {
     // private init
-    cap = (unsigned int)(CAPACITY * 512 / info->nr_zones) / 2;
+    cap = (unsigned int)(CAPACITY * 512 / info->nr_zones) / 4;
     zone_size = info->zone_size;
     zone_number = MAX_ZONE_NUM;
     block_per_zone = zone_size / info->pblock_size;
@@ -44,40 +43,35 @@ void ZNSController::init() {
         Zone[i].valid_page = 0;
         Zone[i].cond = ZBD_ZONE_COND_EMPTY;
         Zone[i].wp = Zone[i].ofst;
+        Zone[i].cf = -1;
         zone_used[i] = false;
     }
     for (PAGE_ID i = 0; i < block_per_zone * zone_number; i++) meta_page[i] = 0;
-}
-
-void ZNSController::write_log() {
-    log_file = fopen(LOG_PATH, "w+");
-    fseek(log_file, 0, SEEK_SET);
-    // fwrite(meta_page, sizeof(bool), MAX_PAGE_NUM, log_file);
-    fclose(log_file);
 }
 
 // bool ZNSController::is_page_valid(PAGE_ID page_id) {
 // return page_id > 0 && get_valid(page_id);
 //}
 
-ZONE_ID ZNSController::read_page_p(PAGE_ID page_id, Frame *frm) {
+ZONE_ID ZNSController::read_page_p(PAGE_ID page_id, char *frame) {
     off_st page_addr = get_page_addr(page_id);
     char *buf = reinterpret_cast<char *>(memalign(4096, PAGE_SIZE));
     assert(buf != nullptr);
     off_st ret = pread(dev_id, buf, PAGE_SIZE, page_addr);
     assert(ret == PAGE_SIZE);
-    memcpy(frm->field, buf, PAGE_SIZE);
+    memcpy(frame, buf, PAGE_SIZE);
     inc_io_count();
     free(buf);
     return page_addr / zone_size;
 }
 
-int ZNSController::write_page_p(int cf, PAGE_ID page_id, char const *write_buffer) {
+int ZNSController::write_page_p(int cf, PAGE_ID page_id,
+                                char const *write_buffer) {
     set_valid(get_page_addr(page_id), 0);
     ZONE_ID zoneWid = select_write_zone(cf, 1);
     set_page_addr(page_id, Zone[zoneWid].wp);
     set_valid(get_page_addr(page_id), 1);
-    off_st ret = pwrite(dev_id, write_buffer, PAGE_SIZE, Zone[zoneWid].wp);
+    off_st ret = pwrite64(dev_id, write_buffer, PAGE_SIZE, Zone[zoneWid].wp);
     assert(ret == PAGE_SIZE);
     // printf("\nzone_id:%d wp:%lld\n", zoneWid, wp_write);
     Zone[zoneWid].wp += ret;
@@ -93,36 +87,29 @@ int ZNSController::write_cluster_p(int cf, char const *write_buffer,
         set_page_addr(page_list[i], Zone[zoneWid].wp + i * PAGE_SIZE);
         set_valid(get_page_addr(page_list[i]), 1);
     }
-    off_st ret = pwrite(dev_id, write_buffer, PAGE_SIZE * cluster_size,
-                        Zone[zoneWid].wp);
-    assert(ret == PAGE_SIZE * cluster_size);
-    if (ret != PAGE_SIZE * cluster_size) {
-        //if ((Zone[zoneWid].wp !=
-             //get_zone_wp(zoneWid) - PAGE_SIZE * cluster_size))
-            printf("sad");
+    for (int i = 0; i <= cluster_size / WRITE_BATCH; i++) {
+        // printf("\nbefore:%ld %ld\n", Zone[zoneWid].wp, get_zone_wp(zoneWid));
+        if (i != cluster_size / WRITE_BATCH) {
+            off_st ret =
+                pwrite64(dev_id, write_buffer + i * WRITE_BATCH * PAGE_SIZE,
+                         PAGE_SIZE * WRITE_BATCH, Zone[zoneWid].wp);
+            assert(ret == PAGE_SIZE * WRITE_BATCH);
+            Zone[zoneWid].wp += ret;
+            inc_io_count();
+        } else {
+            off_st ret = pwrite64(
+                dev_id, write_buffer + i * WRITE_BATCH * PAGE_SIZE,
+                PAGE_SIZE * (cluster_size % WRITE_BATCH), Zone[zoneWid].wp);
+            assert(ret == PAGE_SIZE * (cluster_size % WRITE_BATCH));
+            Zone[zoneWid].wp += ret;
+            inc_io_count();
+        }
     }
-    Zone[zoneWid].wp += ret;
-    inc_io_count();
-    return 0;
-}
-
-int ZNSController::write_cluster_a(int cf, char *write_buffer,
-                                   PAGE_ID *page_list, int cluster_size) {
-    /*
-    ZONE_ID zoneWid = select_write_zone(cf, cluster_size);
-    for (int i = 0; i < cluster_size; i++) {
-        set_valid(get_page_addr(page_list[i]), 0);
-        set_page_addr(page_list[i], Zone[i].wp + i * PAGE_SIZE);
-        set_valid(get_page_addr(page_list[i]), 1);
-    }
-     nvme_zns_append(nvme_write_buffer);
-    inc_io_count();
-     Zone[zoneWid].wp += ret;
-     */
     return 0;
 }
 
 ZONE_ID ZNSController::select_write_zone(int cf, int cluster_size) {
+    /*
     ZONE_ID zone_ret = cf;
     for (ZONE_ID i = zone_ret; i < MAX_ZONE_NUM; i += cluster_num)
         if (Zone[i].cond == ZBD_ZONE_COND_EXP_OPEN &&
@@ -143,14 +130,36 @@ ZONE_ID ZNSController::select_write_zone(int cf, int cluster_size) {
         Zone[zone_ret].cond = ZBD_ZONE_COND_EXP_OPEN;
     }
     return zone_ret;
+    */
+    cf = cf % cluster_num;
+    for (ZONE_ID i = 0; i < MAX_ZONE_NUM; i++) {
+        if (Zone[i].cf == cf && Zone[i].cond == ZBD_ZONE_COND_EXP_OPEN &&
+            Zone[i].wp + cluster_size * PAGE_SIZE <= Zone[i].ofst + cap)
+            return i;
+        else if (Zone[i].cf == cf && Zone[i].cond == ZBD_ZONE_COND_EXP_OPEN &&
+                 Zone[i].wp + cluster_size * PAGE_SIZE > Zone[i].ofst + cap) {
+            finish_zone(i);
+            Zone[i].cond = ZBD_ZONE_COND_FULL;
+        }
+    }
+    for (ZONE_ID i = 0; i < MAX_ZONE_NUM; i++) {
+        if (Zone[i].cf == -1 && Zone[i].cond == ZBD_ZONE_COND_EMPTY) {
+            open_zone(i);
+            Zone[i].cond = ZBD_ZONE_COND_EXP_OPEN;
+            zone_used[i] = true;
+            Zone[i].cf = cf;
+            return i;
+        }
+    }
+    assert(0);
 }
 
-void ZNSController::create_new_page(PAGE_ID page_id, char *write_buffer) {
+void ZNSController::create_new_page(PAGE_ID page_id, char const *write_buffer) {
     int cf = page_id % cluster_num;
     ZONE_ID zoneWid = select_write_zone(cf, 1);
     set_page_addr(page_id, Zone[zoneWid].wp);
     set_valid(get_page_addr(page_id), 1);
-    off_st ret = pwrite(dev_id, write_buffer, PAGE_SIZE, Zone[zoneWid].wp);
+    off_st ret = pwrite64(dev_id, write_buffer, PAGE_SIZE, Zone[zoneWid].wp);
     assert(ret == PAGE_SIZE);
     Zone[zoneWid].wp += ret;
     inc_io_count();
@@ -281,9 +290,9 @@ void ZNSController::print_gc_info() {
         op << std::endl;
         for (ZONE_ID i = 0; i < zone_number; i++) {
             if ((int)i % cluster_num == j && Zone[i].idle_rate > 1e-9)
-                op << "\n\tzone \t" << i << "\t idle_rate \t" << std::setw(8)
-                   << Zone[i].idle_rate << "\t garbage_rate: \t" << std::setw(8)
-                   << Zone[i].gc_rate << "\t" << Zone[i].cond << "\t";
+                op << "\n\tzone \t" << i << "\t idle_rate/garbage_rate: \t" << std::setw(8)
+                   << Zone[i].gc_rate << std::setw(8)
+                   << Zone[i].idle_rate << Zone[i].cond << "\t";
         }
     }
     used_zone = 0;
@@ -297,7 +306,7 @@ void ZNSController::print_gc_info() {
 void ZNSController::garbage_collection_detect() {
     get_gc_info();
     for (ZONE_ID i = 0; i < zone_number; i++)
-        if (Zone[i].idle_rate > 0.90 && Zone[i].gc_rate > 0.85)
+        if (Zone[i].idle_rate > 0.80 && Zone[i].gc_rate > 0.80)
             garbage_collection(i);
 }
 
@@ -311,21 +320,27 @@ void ZNSController::garbage_collection(ZONE_ID id) {
     for (off_st pos = Zone[id].ofst; pos < Zone[id].ofst + cap;
          pos += PAGE_SIZE) {
         if (get_valid(pos)) {
-            char *buf = reinterpret_cast<char *>(memalign(4096, PAGE_SIZE));
-            assert(buf != nullptr);
+            int rett;
+            char *buf;
+            rett = posix_memalign((void **)&buf, MEM_ALIGN_SIZE, FRAME_SIZE);
+            assert(rett == 0);
             off_st ret = pread(dev_id, buf, PAGE_SIZE, pos);
             assert(ret == PAGE_SIZE);
             inc_io_count();
-            char read_id_[8];
+            char *read_id_ = (char *)malloc(sizeof(char) * sizeof(PAGE_ID));
             for (long unsigned int i = 0; i < sizeof(PAGE_ID); i++)
                 read_id_[i] = buf[i];
-            PAGE_ID read_id = atol(read_id_);
-            write_page_p(id, read_id, buf);
+            PAGE_ID *read_id = (PAGE_ID *)malloc(sizeof(PAGE_ID));
+            memcpy(read_id, read_id_, sizeof(PAGE_ID));
+            write_page_p(id, *read_id, reinterpret_cast<char const *>(buf));
             free(buf);
+            free(read_id_);
+            free(read_id);
         }
     }
     reset_zone(id);
     Zone[id].cond = ZBD_ZONE_COND_EMPTY;
+    Zone[id].cf = -1;
     Zone[id].wp = Zone[id].ofst;
     for (off_st pos = Zone[id].ofst; pos < Zone[id].ofst + cap;
          pos += PAGE_SIZE) {

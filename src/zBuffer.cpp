@@ -10,10 +10,20 @@ BufferManager::BufferManager() {
     output = zdsm->output;
     strategy = new ZALP(output);
     lrus = new LRU;
-    free_frames_num = DEF_BUF_SIZE; 
+    free_frames_num = DEF_BUF_SIZE;
     zdsm->cluster_num = zalp_wc ? HC_LV : (zalp ? CLUSTER_NUM : 1);
     flush_count = (int *)malloc(sizeof(int) * zdsm->cluster_num);
-    for (int i = 0; i < zdsm->cluster_num; i++) flush_count[i] = 0;
+    zdsm->zone_select_ptr = (int *)malloc(sizeof(int) * zdsm->cluster_num);
+    for (int i = 0; i < zdsm->cluster_num; i++) {
+        flush_count[i] = 0;
+        zdsm->zone_select_ptr[i] = -1;
+    }
+    int ret;
+    for (int i = 0; i < DEF_BUF_SIZE; i++) {
+        buffer[i] = nullptr;
+        ret = posix_memalign((void **)(buffer + i), MEM_ALIGN_SIZE, FRAME_SIZE);
+        assert(ret == 0);
+    }
     hit_count = 0;
 }
 
@@ -25,25 +35,25 @@ BufferManager::~BufferManager() {
 
 int BufferManager::hash_func(PAGE_ID page_id) { return page_id % DEF_BUF_SIZE; }
 
-Frame::sptr BufferManager::read_page(PAGE_ID page_id) {
+char *BufferManager::read_page(PAGE_ID page_id) {
     int frame_id = fix_page(false, page_id);
     // printf("read frm_id: %d", frame_id);
-    auto frame = std::make_shared<Frame>();
-    memcpy(frame->field, (buffer + frame_id)->field, FRAME_SIZE);
+    char *frame = reinterpret_cast<char *>(memalign(4096, PAGE_SIZE));
+    memcpy(frame, buffer[frame_id], FRAME_SIZE);
     read_count[frame_id]++;
     char *read_id_ = (char *)malloc(sizeof(char) * sizeof(PAGE_ID));
     for (long unsigned int i = 0; i < sizeof(PAGE_ID); i++)
-        read_id_[i] = (buffer + frame_id)->field[i];
+        read_id_[i] = *(buffer[frame_id] + i);
     PAGE_ID *read_id = (PAGE_ID *)malloc(sizeof(PAGE_ID));
     memcpy(read_id, read_id_, sizeof(PAGE_ID));
     assert(*read_id == page_id);
+    free(read_id);
     return frame;
 }
 
-void BufferManager::write_page(PAGE_ID page_id, const Frame::sptr &frame) {
+void BufferManager::write_page(PAGE_ID page_id, char *frame) {
     FRAME_ID frame_id = fix_page(true, page_id);
-    // printf("write frm_id: %d", frame_id);
-    memcpy((buffer + frame_id)->field, frame->field, FRAME_SIZE);
+    memcpy(buffer[frame_id], frame, FRAME_SIZE);
     read_count[frame_id]++;
     set_dirty(frame_id);
 }
@@ -64,7 +74,7 @@ FRAME_ID BufferManager::fix_page(bool is_write, PAGE_ID page_id) {
             lrus->push(frame_id);
             set_page_id(frame_id, page_id);
             if (!is_write) {
-                zdsm->read_page_p(page_id, buffer + frame_id);
+                zdsm->read_page_p(page_id, buffer[frame_id]);
             }
             return frame_id;
 
@@ -95,15 +105,15 @@ FRAME_ID BufferManager::fix_page(bool is_write, PAGE_ID page_id) {
             if (!is_write) {
                 if (zalp_wc) {
                     cluster_flag[frame_id] =
-                        zdsm->read_page_p(page_id, buffer + frame_id) * 0;
+                        zdsm->read_page_p(page_id, buffer[frame_id]) * 0;
                     write_count[frame_id] = 0;
                     read_count[frame_id] = 0;
                 } else if (zalp) {
                     cluster_flag[frame_id] =
-                        zdsm->read_page_p(page_id, buffer + frame_id) %
+                        zdsm->read_page_p(page_id, buffer[frame_id]) %
                         zdsm->cluster_num;
                 } else if (cflru) {
-                    zdsm->read_page_p(page_id, buffer + frame_id);
+                    zdsm->read_page_p(page_id, buffer[frame_id]);
                 }
             }
         } else {
@@ -117,7 +127,7 @@ FRAME_ID BufferManager::fix_page(bool is_write, PAGE_ID page_id) {
     return frame_id;
 }
 
-void BufferManager::fix_new_page(PAGE_ID page_id, const Frame::sptr &frame) {
+void BufferManager::fix_new_page(PAGE_ID page_id, char *frame) {
     FRAME_ID frame_id;
     if (lru) {
         if (free_frames_num == 0) {
@@ -126,15 +136,19 @@ void BufferManager::fix_new_page(PAGE_ID page_id, const Frame::sptr &frame) {
             frame_id = DEF_BUF_SIZE - free_frames_num;
             free_frames_num--;
         }
-        memcpy((buffer + frame_id)->field, frame->field, FRAME_SIZE);
-        char *write_buffer =
-            reinterpret_cast<char *>(memalign(4096, FRAME_SIZE));
-        memcpy(write_buffer, frame->field, FRAME_SIZE);
-        zdsm->create_new_page(page_id, write_buffer);
+        memcpy(buffer[frame_id], frame, FRAME_SIZE);
+        int ret;
+        char *write_buffer;
+        ret =
+            posix_memalign((void **)&write_buffer, MEM_ALIGN_SIZE, FRAME_SIZE);
+        assert(ret == 0);
+        memcpy(write_buffer, frame, FRAME_SIZE);
+        zdsm->create_new_page(page_id, reinterpret_cast<char const *>(write_buffer));
         insert_bcb(page_id, frame_id);
         lrus->push(frame_id);
         set_page_id(frame_id, page_id);
         free(write_buffer);
+        write_buffer = nullptr;
     } else {
         if (strategy->is_evict()) evict_victim();
         int is_free = strategy->get_frame(&frame_id);
@@ -150,11 +164,14 @@ void BufferManager::fix_new_page(PAGE_ID page_id, const Frame::sptr &frame) {
             }
         }
 
-        memcpy((buffer + frame_id)->field, frame->field, FRAME_SIZE);
-        char *write_buffer =
-            reinterpret_cast<char *>(memalign(4096, FRAME_SIZE));
-        memcpy(write_buffer, frame->field, FRAME_SIZE);
-        zdsm->create_new_page(page_id, write_buffer);
+        memcpy(buffer[frame_id], frame, FRAME_SIZE);
+        int ret;
+        char *write_buffer;
+        ret =
+            posix_memalign((void **)&write_buffer, MEM_ALIGN_SIZE, FRAME_SIZE);
+        assert(ret == 0);
+        memcpy(write_buffer, frame, FRAME_SIZE);
+        zdsm->create_new_page(page_id, reinterpret_cast<char const *>(write_buffer));
         if (zalp_wc) {
             cluster_flag[frame_id] = 0;
             write_count[frame_id] = 0;
@@ -166,6 +183,7 @@ void BufferManager::fix_new_page(PAGE_ID page_id, const Frame::sptr &frame) {
         strategy->push(frame_id, 0);
         set_page_id(frame_id, page_id);
         free(write_buffer);
+        write_buffer = nullptr;
     }
 }
 
@@ -178,12 +196,18 @@ int BufferManager::select_victim() {
     for (auto iter = bcb_list->begin(); iter != bcb_list->end(); iter++) {
         if (iter->get_page_id() == victim_page_id) {
             if (iter->is_dirty()) {
-                char *write_buffer =
-                    reinterpret_cast<char *>(memalign(4096, FRAME_SIZE));
-                memcpy(write_buffer, (buffer + frame_id)->field, FRAME_SIZE);
-                zdsm->write_page_p(0, victim_page_id, reinterpret_cast<char const *>(write_buffer));
+                int ret;
+                char *write_buffer;
+                ret = posix_memalign((void **)&write_buffer, MEM_ALIGN_SIZE,
+                                     FRAME_SIZE);
+                assert(ret == 0);
+                memcpy(write_buffer, buffer[frame_id], FRAME_SIZE);
+                zdsm->write_page_p(
+                    0, victim_page_id,
+                    reinterpret_cast<char const *>(write_buffer));
                 zdsm->garbage_collection_detect();
                 free(write_buffer);
+                write_buffer = nullptr;
             }
             bcb_list->erase(iter);
             break;
@@ -204,9 +228,8 @@ int BufferManager::HC_Lv(int cluster_flag, int max) {
 
 void BufferManager::evict_victim() {
     int cf;
-    std::list<int> *candidate_list, *victim_list;
-    candidate_list = new std::list<int>;
-    victim_list = new std::list<int>;
+    std::list<FRAME_ID> *candidate_list= new std::list<FRAME_ID>;
+    std::list<FRAME_ID> *victim_list= new std::list<FRAME_ID>;
 
     if (zalp_wc) {
         if (wh_only) {
@@ -228,9 +251,7 @@ void BufferManager::evict_victim() {
                         break;
                 }
             }
-            
             cf = hot;
-
             if (dirty_cluster[hot] < (DEF_BUF_SIZE - WORK_REG_SIZE) / 4) {
                 int cfnum = -1;
                 for (int i = 0; i < HC_LV; i++) {
@@ -306,23 +327,22 @@ void BufferManager::evict_victim() {
         cf = 0;
         strategy->update_dirty(victim_list);
     }
-
-    char *write_buffer = reinterpret_cast<char *>(
-        memalign(4096, victim_list->size() * FRAME_SIZE));
+    int ret;
+    char *write_buffer;
+    ret = posix_memalign((void **)&write_buffer, MEM_ALIGN_SIZE,
+                         victim_list->size() * FRAME_SIZE);
+    assert(ret == 0);
     PAGE_ID *page_list =
         (PAGE_ID *)malloc(sizeof(PAGE_ID) * victim_list->size());
     int i = 0;
     for (auto &iter : *victim_list) {
-        memcpy(write_buffer + i * FRAME_SIZE, (buffer + iter)->field,
-               FRAME_SIZE);
+        memcpy(write_buffer + i * FRAME_SIZE, buffer[iter], FRAME_SIZE);
         page_list[i] = get_page_id(iter);
         i++;
     }
-    zdsm->write_cluster_p(cf, reinterpret_cast<char const*>(write_buffer), page_list, victim_list->size());
-    // printf("\nvictim cluster %d, flush %d pages\n", cf, i);
-    // std::ofstream op(output, std::ios::app);
-    // op << "\nvictim cluster " << cf << " flush pages " << i ;
-    // op.close();
+    zdsm->write_cluster_p(cf, write_buffer, page_list, victim_list->size());
+    free(write_buffer);
+    write_buffer = nullptr;
     flush_count[cf] += victim_list->size();
 
     for (auto &iter : *victim_list) {
@@ -337,8 +357,13 @@ void BufferManager::evict_victim() {
         }
     }
     zdsm->garbage_collection_detect();
+    victim_list->clear();
+    candidate_list->clear();
+    victim_list = nullptr;
+    candidate_list = nullptr;
+    delete(victim_list);
+    delete(candidate_list);
     free(page_list);
-    free(write_buffer);
 }
 
 void BufferManager::clean_buffer() {
@@ -348,12 +373,17 @@ void BufferManager::clean_buffer() {
     for (const auto &bcb_list : page_to_frame)
         for (const auto &iter : bcb_list)
             if (iter.is_dirty()) {
-                char *write_buffer =
-                    reinterpret_cast<char *>(memalign(4096, FRAME_SIZE));
-                memcpy(write_buffer, (buffer + iter.get_frame_id())->field,
-                       FRAME_SIZE);
-                zdsm->write_page_p(0, iter.get_page_id(), reinterpret_cast<char const *>(write_buffer));
+                int ret;
+                char *write_buffer;
+                ret = posix_memalign((void **)&write_buffer, MEM_ALIGN_SIZE,
+                                     FRAME_SIZE);
+                assert(ret == 0);
+                memcpy(write_buffer, buffer[iter.get_frame_id()], FRAME_SIZE);
+                zdsm->write_page_p(
+                    0, iter.get_page_id(),
+                    reinterpret_cast<char const *>(write_buffer));
                 free(write_buffer);
+                write_buffer = nullptr;
             }
 
     op << std::endl << "flush count: ";

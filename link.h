@@ -59,25 +59,23 @@ class Instruction {
         return os;
     }
 
-    void execute(const BufferManager::sptr &bm) {
+    void execute(BufferManager *bm) {
         if (operate == INSERT) {
-            auto frame = generate_random_frame(page_id);
+            char *frame = generate_random_frame(page_id);
             bm->fix_new_page(page_id, frame);
+            free(frame);
         } else if (operate == UPDATE) {
-            auto new_frame = generate_random_frame(page_id);
-            bm->write_page(page_id, new_frame);
+            char *frame = generate_random_frame(page_id);
+            bm->write_page(page_id, frame);
+            free(frame);
         } else if (operate == READ) {
-            bm->read_page(page_id);
+            char *frame = bm->read_page(page_id);
+            free(frame);
         }
     };
 
     static Instruction::vector read_instructions(const std::string &filename) {
         std::ifstream test_file(filename);
-        if (!test_file) {
-            test_file.close();
-            test_file.clear();
-            test_file.open(filename);
-        }
         assert(test_file.is_open());
         std::string line;
         auto ins_vector = std::make_shared<std::vector<Instruction>>();

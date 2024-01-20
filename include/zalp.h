@@ -48,6 +48,7 @@ class ZALP {
    private:
     std::string output;
     List *lList;
+    ListNode worksSizePtr;
     List *fList;
     List *cList;
     List *dList;

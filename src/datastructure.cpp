@@ -18,11 +18,14 @@ void List::L_push(DataType data, int pos) {
     ListNode *new_node = new ListNode(data);
     if (pos == listsize) {
         tail->next = new_node;
+        new_node->prev = tail;
         tail = new_node;
     } else {
         ListNode *p = head;
         for (int i = 0; i < pos; i++) p = p->next;
         new_node->next = p->next;
+        new_node->prev = p;
+        p->next->prev = new_node;
         p->next = new_node;
     }
     listsize++;
@@ -36,6 +39,8 @@ void List::L_pop_front() {
     assert(head->next != nullptr);
     ListNode *p = head->next;
     head->next = p->next;
+    if (p->next != nullptr)
+    p->next->prev = head;
     if (p == tail) tail = head;
     free(p);
     listsize--;
@@ -43,11 +48,7 @@ void List::L_pop_front() {
 
 void List::L_pop_back() {
     assert(tail != head);
-    ListNode *p = head, *q = tail;
-    while (p->next != tail) {
-        p = p->next;
-        assert(p != nullptr);
-    }
+    ListNode *p = tail->prev, *q = tail;
     free(q);
     tail = p;
     tail->next = nullptr;
@@ -65,13 +66,10 @@ DataType List::L_back() {
 }
 
 void List::L_erase(ListNode *node) {
-    ListNode *p = head;
-    while (p->next != node) {
-        p = p->next;
-        assert(p != nullptr);
-    }
+    ListNode *p = node->prev;
     if (node == tail) tail = p;
     p->next = node->next;
+    if (node->next != nullptr) node->next->prev = p;
     free(node);
     listsize--;
 }

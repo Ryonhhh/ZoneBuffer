@@ -43,7 +43,7 @@ bool ZALP::get_frame(FRAME_ID* rtframe) {
 
 bool ZALP::is_evict() {
     assert(lList->L_size() == dList->L_size() + cList->L_size());
-    if (fList->L_size() != 0 || lList->L_size() <= WORK_REG_SIZE) return 0;
+    if (fList->L_size() != 0 || lList->L_size() <= WORK_REG_SIZE || cList->L_size() > WORK_REG_SIZE) return 0;
     auto iterL = lList->L_advance(lList->L_begin(), WORK_REG_SIZE);
     if (dMap->H_find(iterL->data) == nullptr) return 0;
     auto iterD = dMap->H_find(iterL->data)->value;
