@@ -367,7 +367,6 @@ void BufferManager::evict_victim() {
 }
 
 void BufferManager::clean_buffer() {
-    // strategy->print_list();
     std::ofstream op(output, std::ios::app);
     std::cout << std::endl << "Cleaning buffer" << std::endl;
     for (const auto &bcb_list : page_to_frame)

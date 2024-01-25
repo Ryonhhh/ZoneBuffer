@@ -17,7 +17,7 @@ void db_bench(BufferManager *bm, string bench_file) {
             std::cout << std::endl;
             //bm->zdsm->print_gc_info();
         }
-        if (index % (ins_vector->size() / 100) == 0) std::cout << "#";
+        if (index % (ins_vector->size() / 100) == 0) std::cout << "#" <<std::flush;
         index++;
         iter.execute(bm);
     }
@@ -35,7 +35,9 @@ int main() {
     db_bench(bm, test_db_file);
     end_t = clock();
     double t = (end_t - start_t) / CLOCKS_PER_SEC;
+    bm->clean_buffer();
     std::ofstream op(bm->output,std::ios::app);
     op << std::endl << "running time" << t << "s" << std::endl;
+    delete(bm);
     return 0;
 }

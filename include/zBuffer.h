@@ -17,6 +17,8 @@ class BufferManager {
 
     ~BufferManager();
 
+    void clean_buffer();
+
     char *read_page(PAGE_ID page_id);
 
     void write_page(PAGE_ID page_id, char *frame);
@@ -38,10 +40,10 @@ class BufferManager {
     ZNSController *zdsm;
 
    private:
-    bool zalp_wc = 0, wh_only = 0;
-    bool zalp = 0;
-    bool cflru = 0;
-    bool lru = 1;
+    bool zalp_wc = true, wh_only = true;
+    bool zalp = false;
+    bool cflru = false;
+    bool lru = false;
     enum WC{cold, warm, hot};
     char *buffer[DEF_BUF_SIZE]{};
     int cluster_flag[DEF_BUF_SIZE]{};
@@ -64,8 +66,6 @@ class BufferManager {
     int HC_Lv(int cluster_flag, int max);
 
     void evict_victim();
-
-    void clean_buffer();
 
     PAGE_ID get_page_id(FRAME_ID frame_id);
 

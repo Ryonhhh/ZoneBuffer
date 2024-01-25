@@ -5,11 +5,13 @@
 #include <malloc.h>
 #include <string.h>
 #include <time.h>
+#include <thread>
 
 #include <fstream>
 #include <iomanip>
 #include <iostream>
 #include <errno.h>
+#include "../libcuckoo/cuckoohash_map.hh"
 
 #include "common.h"
 #include "parameter.h"
@@ -40,6 +42,8 @@ class ZNSController {
     int write_cluster_p(int cf, char const *write_buffer, PAGE_ID *page_list,
                         int cluster_size);
 
+    int write_page_gc(int cf, PAGE_ID page_id, char const *write_buffer);
+
     void create_new_page(PAGE_ID page_id, char const *write_buffer);
 
     void get_gc_info();
@@ -62,6 +66,7 @@ class ZNSController {
         int cf;
         double idle_rate;
         double gc_rate;
+        bool inGc;
     } ZoneDesc;
 
     unsigned int zone_number;
@@ -90,7 +95,7 @@ class ZNSController {
 
     PAGE_ID pages_num;
 
-    off_st *pageid2addr;
+    libcuckoo::cuckoohash_map<PAGE_ID, off_st> Table;
 
     int io_count;
 
@@ -125,6 +130,8 @@ class ZNSController {
     void set_page_addr(PAGE_ID page_id, off_st addr);
 
     void set_valid(off_st page_addr, bool is_valid);
+
+    void set_valid_gc(off_st page_addr, bool is_valid);
 
     bool get_valid(off_st page_addr);
 

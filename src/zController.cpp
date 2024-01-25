@@ -21,8 +21,12 @@ ZNSController::ZNSController() {
 }
 
 ZNSController::~ZNSController() {
+    for (int i = 0; i < zone_number; i++) {
+        while (Zone[i].inGc == true)
+            ;
+        // Zone[i].inGc == false
+    }
     free(meta_page);
-    free(pageid2addr);
     // close_file();
 }
 
@@ -34,8 +38,6 @@ void ZNSController::init() {
     block_per_zone = zone_size / info->pblock_size;
     meta_page = (bool *)malloc(sizeof(bool) * block_per_zone * zone_number);
     pages_num = 0;
-    pageid2addr =
-        (off_st *)malloc(sizeof(off_st) * block_per_zone * zone_number);
     reset_all();
     for (ZONE_ID i = 0; i < zone_number; i++) {
         Zone[i].id = i;
@@ -45,6 +47,7 @@ void ZNSController::init() {
         Zone[i].wp = Zone[i].ofst;
         Zone[i].cf = -1;
         zone_used[i] = false;
+        Zone[i].inGc = false;
     }
     for (PAGE_ID i = 0; i < block_per_zone * zone_number; i++) meta_page[i] = 0;
 }
@@ -109,28 +112,6 @@ int ZNSController::write_cluster_p(int cf, char const *write_buffer,
 }
 
 ZONE_ID ZNSController::select_write_zone(int cf, int cluster_size) {
-    /*
-    ZONE_ID zone_ret = cf;
-    for (ZONE_ID i = zone_ret; i < MAX_ZONE_NUM; i += cluster_num)
-        if (Zone[i].cond == ZBD_ZONE_COND_EXP_OPEN &&
-            Zone[i].wp + cluster_size * PAGE_SIZE <= Zone[i].ofst + cap)
-            return i;
-    while (Zone[zone_ret].cond == ZBD_ZONE_COND_FULL ||
-           Zone[zone_ret].wp + cluster_size * PAGE_SIZE >
-               Zone[zone_ret].ofst + cap) {
-        if (Zone[zone_ret].cond == ZBD_ZONE_COND_EXP_OPEN) {
-            finish_zone(zone_ret);
-            Zone[zone_ret].cond = ZBD_ZONE_COND_FULL;
-        }
-        zone_ret += cluster_num;
-    }
-    if (Zone[zone_ret].cond == ZBD_ZONE_COND_EMPTY) {
-        open_zone(zone_ret);
-        zone_used[zone_ret] = true;
-        Zone[zone_ret].cond = ZBD_ZONE_COND_EXP_OPEN;
-    }
-    return zone_ret;
-    */
     cf = cf % cluster_num;
     for (ZONE_ID i = 0; i < MAX_ZONE_NUM; i++) {
         if (Zone[i].cf == cf && Zone[i].cond == ZBD_ZONE_COND_EXP_OPEN &&
@@ -173,19 +154,6 @@ void ZNSController::open_file() {
     }
     printf("open device successfully!\n");
     print_zns_info();
-
-    // read log
-    /*if ((log_file = fopen(LOG_PATH, "rb+")) == nullptr) {
-        log_file = fopen(ZNS_PATH, "wb+");
-        char temp[META_PAGE_SIZE] = {0};
-        fwrite(&temp, META_PAGE_SIZE * sizeof(char), 1, log_file);
-        close_file();
-        log_file = fopen(ZNS_PATH, "rb+");
-        assert(log_file != nullptr);
-    }
-    fseek(log_file, 0, SEEK_SET);
-    fread(meta_page, sizeof(int), MAX_PAGE_NUM, log_file);
-    */
 }
 
 void ZNSController::close_file() {
@@ -238,14 +206,26 @@ off_st ZNSController::get_zone_wp(ZONE_ID zone_id) {
 }
 
 off_st ZNSController::get_page_addr(PAGE_ID page_id) {
-    return pageid2addr[page_id];
+    PAGE_ID ret;
+    Table.find(page_id, ret);
+    return ret;
 }
 
 void ZNSController::set_page_addr(PAGE_ID page_id, off_st addr) {
-    pageid2addr[page_id] = addr;
+    Table.insert_or_assign(page_id, addr);
 }
 
 void ZNSController::set_valid(off_st page_addr, bool is_valid) {
+    if (meta_page[page_addr / PAGE_SIZE] == 0 && is_valid == 1)
+        Zone[page_addr / zone_size].valid_page++;
+    else if (meta_page[page_addr / PAGE_SIZE] == 1 && is_valid == 0)
+        Zone[page_addr / zone_size].valid_page--;
+    else
+        assert(0);
+    meta_page[page_addr / PAGE_SIZE] = is_valid;
+}
+
+void ZNSController::set_valid_gc(off_st page_addr, bool is_valid) {
     if (meta_page[page_addr / PAGE_SIZE] == 0 && is_valid == 1)
         Zone[page_addr / zone_size].valid_page++;
     else if (meta_page[page_addr / PAGE_SIZE] == 1 && is_valid == 0)
@@ -286,15 +266,16 @@ void ZNSController::get_gc_info() {
 void ZNSController::print_gc_info() {
     get_gc_info();
     std::ofstream op(output, std::ios::app);
-    for (int j = 0; j < cluster_num; j++) {
-        op << std::endl;
-        for (ZONE_ID i = 0; i < zone_number; i++) {
-            if ((int)i % cluster_num == j && Zone[i].idle_rate > 1e-9)
-                op << "\n\tzone \t" << i << "\t idle_rate/garbage_rate: \t" << std::setw(8)
-                   << Zone[i].gc_rate << std::setw(8)
-                   << Zone[i].idle_rate << Zone[i].cond << "\t";
+    for (ZONE_ID i = 0; i < zone_number; i++) {
+        if (Zone[i].idle_rate > 0) {
+            if ((int)i % cluster_num == 0) op << std::endl;
+            op << "\t"
+               << "[" << i << "]"
+               << "\t" << std::setw(4) << std::setfill(' ') << Zone[i].idle_rate
+               << "\t / \t" << Zone[i].gc_rate << "\t";
         }
     }
+
     used_zone = 0;
     for (ZONE_ID i = 0; i < zone_number; i++) used_zone += zone_used[i];
     op << std::endl << "gc_count: " << gc_count << std::endl;
@@ -306,8 +287,24 @@ void ZNSController::print_gc_info() {
 void ZNSController::garbage_collection_detect() {
     get_gc_info();
     for (ZONE_ID i = 0; i < zone_number; i++)
-        if (Zone[i].idle_rate > 0.80 && Zone[i].gc_rate > 0.80)
-            garbage_collection(i);
+        if (Zone[i].cond == ZBD_ZONE_COND_FULL && Zone[i].gc_rate > 0.90 &&
+            Zone[i].inGc == false) {
+            Zone[i].inGc = true;
+            std::thread BGgc(&ZNSController::garbage_collection, this, i);
+            BGgc.detach();
+        }
+}
+
+int ZNSController::write_page_gc(int cf, PAGE_ID page_id, char const *write_buffer){
+    set_valid_gc(get_page_addr(page_id), 0);
+    ZONE_ID zoneWid = select_write_zone(cf, 1);
+    off_st ret = pwrite64(dev_id, write_buffer, PAGE_SIZE, Zone[zoneWid].wp);
+    assert(ret == PAGE_SIZE);
+    set_page_addr(page_id, Zone[zoneWid].wp);
+    set_valid_gc(get_page_addr(page_id), 1);
+    Zone[zoneWid].wp += ret;
+    inc_io_count();
+    return 0;
 }
 
 void ZNSController::garbage_collection(ZONE_ID id) {
@@ -320,11 +317,11 @@ void ZNSController::garbage_collection(ZONE_ID id) {
     for (off_st pos = Zone[id].ofst; pos < Zone[id].ofst + cap;
          pos += PAGE_SIZE) {
         if (get_valid(pos)) {
-            int rett;
+            off_st ret;
             char *buf;
-            rett = posix_memalign((void **)&buf, MEM_ALIGN_SIZE, FRAME_SIZE);
-            assert(rett == 0);
-            off_st ret = pread(dev_id, buf, PAGE_SIZE, pos);
+            ret = posix_memalign((void **)&buf, MEM_ALIGN_SIZE, FRAME_SIZE);
+            assert(ret == 0);
+            ret = pread(dev_id, buf, PAGE_SIZE, pos);
             assert(ret == PAGE_SIZE);
             inc_io_count();
             char *read_id_ = (char *)malloc(sizeof(char) * sizeof(PAGE_ID));
@@ -332,7 +329,7 @@ void ZNSController::garbage_collection(ZONE_ID id) {
                 read_id_[i] = buf[i];
             PAGE_ID *read_id = (PAGE_ID *)malloc(sizeof(PAGE_ID));
             memcpy(read_id, read_id_, sizeof(PAGE_ID));
-            write_page_p(id, *read_id, reinterpret_cast<char const *>(buf));
+            write_page_gc(Zone[id].cf, *read_id, reinterpret_cast<char const *>(buf));
             free(buf);
             free(read_id_);
             free(read_id);
@@ -348,6 +345,7 @@ void ZNSController::garbage_collection(ZONE_ID id) {
     }
     Zone[id].gc_rate = 0;
     Zone[id].idle_rate = 0;
+    Zone[id].inGc = false;
 }
 
 void ZNSController::print_zns_info() {
