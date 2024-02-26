@@ -444,6 +444,7 @@ void BufferManager::evict_victim_ach() {
         free(write_buffer);
         write_buffer = nullptr;
         flush_count[cf] += victim_list->size();
+        free(victim_list);
     }
 
     evict_count = (evict_count + candidate_list->size());
