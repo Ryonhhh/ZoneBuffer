@@ -2,16 +2,13 @@
 
 namespace zns {
 ZALP::ZALP(std::string out) {
-    lList = new List();
-    fList = new List();
-    cList = new List();
-    dList = new List();
+    lList = new std::list<FRAME_ID>();
+    fList = new std::list<FRAME_ID>();
+    cList = new std::list<FRAME_ID>();
+    dList = new std::list<FRAME_ID>();
 
-    lMap = new HashTable();
-    cMap = new HashTable();
-    dMap = new HashTable();
     for (int i = 0; i < DEF_BUF_SIZE; i++) {
-        fList->L_push_back(i);
+        fList->push_back(i);
     }
     output = out;
 }
@@ -21,111 +18,136 @@ ZALP::~ZALP() {
     free(fList);
     free(cList);
     free(dList);
-    free(lMap);
-    free(cMap);
 }
 
 bool ZALP::get_frame(FRAME_ID* rtframe) {
-    if (fList->L_size() != 0) {
-        *rtframe = fList->L_back();
-        fList->L_pop_back();
+    if (fList->size() != 0) {
+        *rtframe = fList->back();
+        fList->pop_back();
         return 1;
     } else {
-        *rtframe = cList->L_back();
-        cList->L_pop_back();
-        cMap->H_erase(*rtframe);
-        auto iterL = lMap->H_find(*rtframe)->value;
-        lList->L_erase(iterL);
-        lMap->H_erase(*rtframe);
+        assert(cList->size() != 0);
+        *rtframe = cList->back();
+        cList->pop_back();
+        cMap.erase(*rtframe);
+        LIST_ITER iterL = lMap.find(*rtframe);
+        lList->erase(iterL);
+
+        lMap.erase(*rtframe);
+        //
         return 0;
     }
 }
 
+void ZALP::is_correct() {
+    assert(lList->size() == dList->size() + cList->size());
+    LIST_ITER pos = lList->begin(), p = cList->begin(), q = dList->begin();
+    int posi = 0, pi = 0, qi = 0;
+    for (; pos != lList->end(); pos++, posi++) {
+        if (*pos == *p) {
+            p++;
+            pi++;
+        } else if (*pos == *q) {
+            q++;
+            qi++;
+        } else {
+            std::cout << *pos << " " << posi << " " << *p << " " << pi << " "
+                      << *q << " " << qi << std::endl;
+            print_list();
+            assert(0);
+        }
+    }
+    assert(p == cList->end() && q == dList->end());
+}
+
 bool ZALP::is_evict() {
-    assert(lList->L_size() == dList->L_size() + cList->L_size());
-    if (fList->L_size() != 0 || lList->L_size() <= WORK_REG_SIZE || cList->L_size() > WORK_REG_SIZE) return 0;
-    auto iterL = lList->L_advance(lList->L_begin(), WORK_REG_SIZE);
-    if (dMap->H_find(iterL->data) == nullptr) return 0;
-    auto iterD = dMap->H_find(iterL->data)->value;
-    return (dList->L_distance(iterD, dList->L_end()) ==
-            DEF_BUF_SIZE - WORK_REG_SIZE - 1);
+    if (fList->size() != 0 || lList->size() <= WORK_REG_SIZE ||
+        cList->size() > WORK_REG_SIZE)
+        return 0;
+
+    auto iterC = cList->back();
+    LIST_ITER p;
+    if (!cMap.find(iterC, p)) return true;
+    LIST_ITER iterL = lMap.find(iterC);
+
+    return (std::distance(lList->begin(), iterL) < WORK_REG_SIZE);
 }
 
 void ZALP::get_candidate(std::list<int>* candidate_list) {
-    //print_list();
-    auto iterL = lList->L_advance(lList->L_begin(), WORK_REG_SIZE);
-    auto iterD = dMap->H_find(iterL->data)->value;
-    for (; iterD != nullptr; iterD = iterD->next)
-        candidate_list->push_back(iterD->data);
+    LIST_ITER iterD = prev(dList->end());
+    for (int i = 0; i < DEF_BUF_SIZE - WORK_REG_SIZE; i++) {
+        candidate_list->push_front(*iterD);
+        iterD = prev(iterD);
+    }
 }
 
 void ZALP::get_candidate_cflru(std::list<int>* candidate_list) {
-    candidate_list->push_back(dList->L_back());
+    candidate_list->push_back(dList->back());
 }
 
 void ZALP::set_dirty(FRAME_ID id) {
-    auto iterC = cMap->H_find(id)->value;
-    cList->L_erase(iterC);
-    cMap->H_erase(id);
-
-    if (dMap->H_find(id) == nullptr) {
-        dList->L_push_front(id);
-        dMap->H_insert(id, dList->L_begin());
+    LIST_ITER p;
+    if (!dMap.find(id, p)) {
+        dList->push_front(id);
+        dMap.insert(id, dList->begin());
+    }
+    if (cMap.find(id, p)) {
+        cList->erase(p);
+        cMap.erase(id);
     }
 }
 
 void ZALP::update_dirty(std::list<int>* victim_list) {
     for (auto& iter : *victim_list) {
-        auto iterD = dMap->H_find(iter)->value;
-        dList->L_erase(iterD);
-        dMap->H_erase(iter);
-        auto iterL = lMap->H_find(iter)->value;
-        lList->L_erase(iterL);
-        lMap->H_erase(iter);
-        fList->L_push_back(iter);
+        LIST_ITER iterD = dMap.find(iter);
+        dList->erase(iterD);
+        dMap.erase(iter);
+        LIST_ITER iterL = lMap.find(iter);
+        lList->erase(iterL);
+        lMap.erase(iter);
+        fList->push_back(iter);
     }
 }
 
-void ZALP::update_dirty_readhot(std::list<int>* victim_list) {
+void ZALP::dirty_to_clean(std::list<int>* victim_list) {
     for (auto& iter : *victim_list) {
-        auto iterD = dMap->H_find(iter)->value;
-        dList->L_erase(iterD);
-        dMap->H_erase(iter);
-        auto iterL = lMap->H_find(iter)->value;
-        lList->L_erase(iterL);
-        lMap->H_erase(iter);
-        fList->L_push_back(iter);
+        LIST_ITER iterD = dMap.find(iter);
+        dList->erase(iterD);
+        dMap.erase(iter);
+        LIST_ITER p;
+        assert((cMap.find(iter, p) == false));
+        cList->push_back(iter);
+        cMap.insert(iter, prev(cList->end()));
     }
 }
 
 void ZALP::push(FRAME_ID id, bool is_dirty) {
-    // print_list();
-    lList->L_push_front(id);
-    lMap->H_insert(id, lList->L_begin());
+    lList->push_front(id);
+    lMap.insert(id, lList->begin());
 
     if (!is_dirty) {
-        cList->L_push_front(id);
-        cMap->H_insert(id, cList->L_begin());
+        cList->push_front(id);
+        cMap.insert(id, cList->begin());
     } else {
-        dList->L_push_front(id);
-        dMap->H_insert(id, dList->L_begin());
+        dList->push_front(id);
+        dMap.insert(id, dList->begin());
     }
 }
 
 void ZALP::update(FRAME_ID id, bool is_dirty) {
-    //print_list();
-    auto iterL = lMap->H_find(id)->value;
-    lList->L_erase(iterL);
-    lMap->H_erase(id);
+    LIST_ITER iterL = lMap.find(id);
+    lList->erase(iterL);
+    lMap.erase(id);
 
-    if (!is_dirty) {
-        auto iterC = cMap->H_find(id)->value;
-        cList->L_erase(iterC);
-        cMap->H_erase(id);
+    LIST_ITER p;
+    if (cMap.find(id, p)) {
+        cList->erase(p);
+        cMap.erase(id);
+    } else if (dMap.find(id, p)) {
+        dList->erase(p);
+        dMap.erase(id);
     } else {
-        auto iterD = dMap->H_find(id)->value;
-        dList->L_erase(iterD);
-        dMap->H_erase(id);
+        assert(0);
     }
     push(id, is_dirty);
 }
@@ -133,39 +155,45 @@ void ZALP::update(FRAME_ID id, bool is_dirty) {
 void ZALP::print_list() {
     printf("\nlru_list: ");
     int i = 0;
-    for (auto iter = lList->L_begin(); iter != nullptr; iter = iter->next) {
-        if (i == WORK_REG_SIZE) printf(" [");
+    for (auto& iter : *lList) {
+        if (i == WORK_REG_SIZE) printf("\n [");
         i++;
-        printf("%d->", iter->data);
+        std::cout << iter << "->" << std::flush;
     }
     printf("]\n\nfree_list: ");
-    for (auto iter = fList->L_begin(); iter != nullptr; iter = iter->next)
-        printf("%d->", iter->data);
-    printf("\n\nclean_list: ");
-    for (auto iter = cList->L_begin(); iter != nullptr; iter = iter->next)
-        printf("%d->", iter->data);
+    for (auto& iter : *fList) {
+        std::cout << iter << "->" << std::flush;
+    }
+
     printf("\n\ndirty_list: ");
-    for (auto iter = dList->L_begin(); iter != nullptr; iter = iter->next)
-        printf("%d->", iter->data);
-    printf("\n");
+    for (auto& iter : *dList) {
+        std::cout << iter << "->" << std::flush;
+    }
+    printf("\n\nclean_list: ");
+    for (auto& iter : *cList) {
+        std::cout << iter << "->" << std::flush;
+    }
+    printf("\n\n\n");
+    /*
     std::ofstream op(output, std::ios::app);
     op << std::endl << "lList: ";
     i = 0;
-    for (auto iter = lList->L_begin(); iter != nullptr; iter = iter->next) {
+    for (auto iter = lList->begin(); iter != nullptr; iter = iter->next) {
         if (i == WORK_REG_SIZE) op << " [";
         i++;
-        op << iter->data << "->";
+        op << iter << "->";
     }
     op << std::endl << "fList: ";
-    for (auto iter = fList->L_begin(); iter != nullptr; iter = iter->next)
-        op << iter->data << "->";
+    for (auto iter = fList->begin(); iter != nullptr; iter = iter->next)
+        op << iter << "->";
     op << std::endl << "cList: ";
-    for (auto iter = cList->L_begin(); iter != nullptr; iter = iter->next)
-        op << iter->data << "->";
+    for (auto iter = cList->begin(); iter != nullptr; iter = iter->next)
+        op << iter << "->";
     op << std::endl << "dList: ";
-    for (auto iter = dList->L_begin(); iter != nullptr; iter = iter->next)
-        op << iter->data << "->";
+    for (auto iter = dList->begin(); iter != nullptr; iter = iter->next)
+        op << iter << "->";
     op.close();
+    */
 }
 
 LRU::LRU() {

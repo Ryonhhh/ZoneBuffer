@@ -2,34 +2,40 @@
 #define ZNS_ZALP_HPP
 
 #include <assert.h>
+#include <libzbd/zbd.h>
 #include <stdlib.h>
 
-#include <cstdlib>
-#include <iostream>
-#include <list>
 #include <algorithm>
+#include <cstdlib>
+#include <fstream>
+#include <iostream>
+#include <iterator>
+#include <list>
 #include <memory>
 #include <unordered_map>
-#include <fstream>
 
-#include <libzbd/zbd.h>
-#include "parameter.h"
+#include "../libcuckoo/cuckoohash_map.hh"
 #include "datastructure.h"
+#include "parameter.h"
 
 #define cluster_gc_num 16
 
 namespace zns {
 class ZALP {
+    typedef std::list<FRAME_ID>::iterator LIST_ITER;
+
    public:
     ZALP(std::string out);
 
     ~ZALP();
 
+    void is_correct();
+
     void get_candidate(std::list<int> *);
 
     void get_candidate_cflru(std::list<int> *);
 
-    bool get_frame(FRAME_ID *rtframe); 
+    bool get_frame(FRAME_ID *rtframe);
 
     bool is_evict();
 
@@ -37,7 +43,7 @@ class ZALP {
 
     void update_dirty(std::list<int> *);
 
-    void update_dirty_readhot(std::list<int> *);
+    void dirty_to_clean(std::list<int> *);
 
     void push(FRAME_ID id, bool is_dirty);
 
@@ -47,32 +53,32 @@ class ZALP {
 
    private:
     std::string output;
-    List *lList;
+    std::list<FRAME_ID> *lList;
     ListNode worksSizePtr;
-    List *fList;
-    List *cList;
-    List *dList;
+    std::list<FRAME_ID> *fList;
+    std::list<FRAME_ID> *cList;
+    std::list<FRAME_ID> *dList;
 
-    HashTable *lMap;
-    HashTable *cMap;
-    HashTable *dMap;
+    libcuckoo::cuckoohash_map<int, LIST_ITER> lMap;
+    libcuckoo::cuckoohash_map<int, LIST_ITER> cMap;
+    libcuckoo::cuckoohash_map<int, LIST_ITER> dMap;
 };
 
 class LRU {
- public:
-  LRU();
+   public:
+    LRU();
 
-  ~LRU();
+    ~LRU();
 
-  int get_victim();
+    int get_victim();
 
-  void push(int id);
+    void push(int id);
 
-  void update(int id);
+    void update(int id);
 
- private:
-  std::list<int> *lList;
-  std::unordered_map<int, std::list<int>::iterator> *lMap;
+   private:
+    std::list<int> *lList;
+    std::unordered_map<int, std::list<int>::iterator> *lMap;
 };
 }  // namespace zns
 

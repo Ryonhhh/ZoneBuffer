@@ -1,12 +1,12 @@
-#define ZNS_PATH "/dev/nvme4n2"
+#define ZNS_PATH "/dev/nvme2n2"
 #define LOG_PATH "./log_file"
 
 #define FRAME_SIZE 4096
 #define PAGE_SIZE 4096
 #define CLUSTER_NUM 4
 #define HC_LV 3
-#define DEF_BUF_SIZE 2048
-#define WORK_REG_SIZE 1536
+#define DEF_BUF_SIZE 32768
+#define WORK_REG_SIZE 24576
 #define MAX_ZONE_NUM 500
 #define MEM_ALIGN_SIZE 4096 
 
@@ -19,3 +19,4 @@ typedef unsigned int ZONE_ID;
 typedef long int off_st;
 typedef long int PAGE_ID;
 typedef int FRAME_ID;
+typedef int ACCTIME;

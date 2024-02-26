@@ -1,0 +1,9 @@
+# ninja log v5
+1	52	1708312312141928980	src/CMakeFiles/zbuf.dir/datastructure.cpp.o	ebc41cee169e31e1
+2	452	1708874683782600605	src/CMakeFiles/zbuf.dir/common.cpp.o	30ad211c6883111d
+1928	2280	1708883043057200894	main	621390453462e255
+2	1456	1708874684782596097	src/CMakeFiles/zbuf.dir/zalp.cpp.o	bbdbd8f9631af1b9
+1	1809	1708883042585203012	src/CMakeFiles/zbuf.dir/zBuffer.cpp.o	fb4d2efb433c9e88
+1	906	1708874684234598568	CMakeFiles/main.dir/main.cpp.o	dc41b15ff961de61
+2	1521	1708874684846595808	src/CMakeFiles/zbuf.dir/zController.cpp.o	5ad38c051bd65710
+1809	1928	1708883042705202473	src/libzbuf.a	4974bbe199243f8d

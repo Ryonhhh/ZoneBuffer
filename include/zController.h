@@ -1,18 +1,19 @@
 #ifndef ZNS_CONTROLLER
 #define ZNS_CONTROLLER
 
+#include <errno.h>
 #include <fcntl.h>
 #include <malloc.h>
 #include <string.h>
 #include <time.h>
-#include <thread>
 
 #include <fstream>
 #include <iomanip>
 #include <iostream>
-#include <errno.h>
-#include "../libcuckoo/cuckoohash_map.hh"
+#include <thread>
+#include <mutex>
 
+#include "../libcuckoo/cuckoohash_map.hh"
 #include "common.h"
 #include "parameter.h"
 
@@ -27,22 +28,30 @@ class ZNSController {
 
     std::string output;
 
+    unsigned int cap;
+
     int gc_count = 0;
+
+    int cd_count = 0;
 
     int cluster_num;
 
+    unsigned int buffer_write_count = 0;
+
     int *zone_select_ptr;
 
-    ZONE_ID read_page_p(PAGE_ID page_id, char *frm);
+    ZONE_ID read_page(PAGE_ID page_id, char *frm);
 
     ZONE_ID select_write_zone(int cf, int cluster_size);
 
-    int write_page_p(int cf, PAGE_ID page_id, char const *write_buffer);
+    ZONE_ID select_write_zone_ach(int cf, int cluster_size);
 
-    int write_cluster_p(int cf, char const *write_buffer, PAGE_ID *page_list,
-                        int cluster_size);
+    void write_page(int cf, PAGE_ID page_id, char const *write_buffer);
 
-    int write_page_gc(int cf, PAGE_ID page_id, char const *write_buffer);
+    void write_cluster(int cf, char const *write_buffer, PAGE_ID *page_list,
+                         int cluster_size);
+
+    void write_page_gc(int cf, PAGE_ID page_id, char const *write_buffer);
 
     void create_new_page(PAGE_ID page_id, char const *write_buffer);
 
@@ -51,6 +60,10 @@ class ZNSController {
     void print_gc_info();
 
     void garbage_collection_detect();
+
+    void cd_detect();
+
+    void cold_data_restruct(std::list<ZONE_ID> restruct);
 
     void io_count_clear();
 
@@ -66,7 +79,10 @@ class ZNSController {
         int cf;
         double idle_rate;
         double gc_rate;
+        double gc_rate_last;
         bool inGc;
+        bool inRe;
+        std::mutex wMutex;
     } ZoneDesc;
 
     unsigned int zone_number;
@@ -74,8 +90,6 @@ class ZNSController {
     ZoneDesc Zone[MAX_ZONE_NUM];
 
     unsigned int zone_size;
-
-    unsigned int cap;
 
     long long block_per_zone;
 
@@ -97,13 +111,27 @@ class ZNSController {
 
     libcuckoo::cuckoohash_map<PAGE_ID, off_st> Table;
 
-    int io_count;
+    unsigned int io_count;
+
+    unsigned int gc_valid_count = 0;
+
+    unsigned int write_count = 0;
 
     double valid_data = 0, real_data = 0;
 
     int used_zone = 0;
 
+    bool Gc = 0;
+
+    bool Cd = 0;
+
     bool zone_used[MAX_ZONE_NUM]{};
+
+    std::list<int> *zone_list;
+    std::list<int> free_zone_list;
+    std::list<int> full_zone_list;
+
+    bool covzs = 1;
 
     void open_file();
 

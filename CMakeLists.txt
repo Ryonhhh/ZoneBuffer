@@ -13,8 +13,5 @@ set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -std=c++17 -O0 -g -Wall -sta
 include_directories(include)
 add_subdirectory(src)
 
-# message("find zbd: ${ZBD_LIBRARIES}")
-# link_libraries(${ZBD_LIBRARIES})
-
 add_executable(main main.cpp)
 target_link_libraries(main zbuf)

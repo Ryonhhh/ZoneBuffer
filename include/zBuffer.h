@@ -40,19 +40,28 @@ class BufferManager {
     ZNSController *zdsm;
 
    private:
-    bool zalp_wc = true, wh_only = true;
+    libcuckoo::cuckoohash_map<PAGE_ID, std::pair<ACCTIME, ACCTIME>> accessH;
+    bool zalp_wc = false, wh_only = false;
+    bool ach_only = false;
     bool zalp = false;
     bool cflru = false;
-    bool lru = false;
-    enum WC{cold, warm, hot};
+    bool lru = true;
+    bool cd_detect = false;
+    enum WC { cold, warm, hot };
     char *buffer[DEF_BUF_SIZE]{};
+    int cd_interval;
     int cluster_flag[DEF_BUF_SIZE]{};
     int write_count[DEF_BUF_SIZE]{};
     int read_count[DEF_BUF_SIZE]{};
     int free_frames_num;
+    unsigned int evict_count = 0;
+    unsigned int insert_count = 0;
+    int cd_count;
     // Hash Table
     PAGE_ID frame_to_page[DEF_BUF_SIZE]{};
+    bool frame_dirty[DEF_BUF_SIZE]{};
     list<BCB> page_to_frame[DEF_BUF_SIZE];
+    libcuckoo::cuckoohash_map<PAGE_ID, FRAME_ID> page2frame;
     // victim strategy
     ZALP *strategy;
     LRU *lrus;
@@ -67,13 +76,13 @@ class BufferManager {
 
     void evict_victim();
 
+    void evict_victim_ach();
+
+    bool ach_clutser(int lv, std::pair<ACCTIME, ACCTIME> acht);
+
     PAGE_ID get_page_id(FRAME_ID frame_id);
 
     void set_page_id(FRAME_ID frame_id, PAGE_ID page_id);
-
-    void insert_bcb(PAGE_ID page_id, FRAME_ID frame_id);
-
-    BCB *get_bcb(PAGE_ID page_id);
 
     void set_dirty(FRAME_ID frame_id);
 

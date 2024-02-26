@@ -39,8 +39,8 @@ class BCB {
     FRAME_ID frame_id;
     bool dirty;
 };
-
 char *generate_random_frame(PAGE_ID page_id);
+
 }  // namespace zns
 
 #endif  // ZNS_COMMON

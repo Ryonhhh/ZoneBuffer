@@ -27,17 +27,20 @@ void db_bench(BufferManager *bm, string bench_file) {
 int main() {
     srand((unsigned)time(NULL));
     BufferManager *bm = new BufferManager();
-    std::cout<<"start loading..."<<std::endl;
+    std::cout << "start loading..." << std::endl;
     db_bench(bm, load_db_file);
     bm->hit_count_clear();
-    std::cout<<"bench start!"<<std::endl;
+    bm->zdsm->print_gc_info();
+    std::cout << "bench start!" << std::endl;
     start_t = clock();
     db_bench(bm, test_db_file);
     end_t = clock();
     double t = (end_t - start_t) / CLOCKS_PER_SEC;
-    bm->clean_buffer();
-    std::ofstream op(bm->output,std::ios::app);
+    std::cout << "****----------------------------------------------------------------****"
+              << std::endl;
+    //bm->clean_buffer();
+    std::ofstream op(bm->output, std::ios::app);
     op << std::endl << "running time" << t << "s" << std::endl;
-    delete(bm);
+    delete (bm);
     return 0;
 }

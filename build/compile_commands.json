@@ -1,0 +1,32 @@
+[
+{
+  "directory": "/home/wht/zalpBuffer/build",
+  "command": "/usr/bin/g++ -I/home/wht/zalpBuffer/include  -std=c++17 -fPIC -pthread -O2 -fmax-errors=5 -g -std=c++17 -O0 -g -Wall -static -DDEBUG -o CMakeFiles/main.dir/main.cpp.o -c /home/wht/zalpBuffer/main.cpp",
+  "file": "/home/wht/zalpBuffer/main.cpp"
+},
+{
+  "directory": "/home/wht/zalpBuffer/build",
+  "command": "/usr/bin/g++ -I/home/wht/zalpBuffer/include  -std=c++17 -fPIC -pthread -O2 -fmax-errors=5 -g -std=c++17 -O0 -g -Wall -static -DDEBUG -o src/CMakeFiles/zbuf.dir/common.cpp.o -c /home/wht/zalpBuffer/src/common.cpp",
+  "file": "/home/wht/zalpBuffer/src/common.cpp"
+},
+{
+  "directory": "/home/wht/zalpBuffer/build",
+  "command": "/usr/bin/g++ -I/home/wht/zalpBuffer/include  -std=c++17 -fPIC -pthread -O2 -fmax-errors=5 -g -std=c++17 -O0 -g -Wall -static -DDEBUG -o src/CMakeFiles/zbuf.dir/datastructure.cpp.o -c /home/wht/zalpBuffer/src/datastructure.cpp",
+  "file": "/home/wht/zalpBuffer/src/datastructure.cpp"
+},
+{
+  "directory": "/home/wht/zalpBuffer/build",
+  "command": "/usr/bin/g++ -I/home/wht/zalpBuffer/include  -std=c++17 -fPIC -pthread -O2 -fmax-errors=5 -g -std=c++17 -O0 -g -Wall -static -DDEBUG -o src/CMakeFiles/zbuf.dir/zalp.cpp.o -c /home/wht/zalpBuffer/src/zalp.cpp",
+  "file": "/home/wht/zalpBuffer/src/zalp.cpp"
+},
+{
+  "directory": "/home/wht/zalpBuffer/build",
+  "command": "/usr/bin/g++ -I/home/wht/zalpBuffer/include  -std=c++17 -fPIC -pthread -O2 -fmax-errors=5 -g -std=c++17 -O0 -g -Wall -static -DDEBUG -o src/CMakeFiles/zbuf.dir/zBuffer.cpp.o -c /home/wht/zalpBuffer/src/zBuffer.cpp",
+  "file": "/home/wht/zalpBuffer/src/zBuffer.cpp"
+},
+{
+  "directory": "/home/wht/zalpBuffer/build",
+  "command": "/usr/bin/g++ -I/home/wht/zalpBuffer/include  -std=c++17 -fPIC -pthread -O2 -fmax-errors=5 -g -std=c++17 -O0 -g -Wall -static -DDEBUG -o src/CMakeFiles/zbuf.dir/zController.cpp.o -c /home/wht/zalpBuffer/src/zController.cpp",
+  "file": "/home/wht/zalpBuffer/src/zController.cpp"
+}
+]
