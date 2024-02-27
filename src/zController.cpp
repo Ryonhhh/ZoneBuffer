@@ -145,7 +145,7 @@ void ZNSController::write_cluster(int cf, char const *write_buffer,
                          PAGE_SIZE * WRITE_BATCH, Zone[zoneWid].wp);
             assert(ret == PAGE_SIZE * WRITE_BATCH);
             Zone[zoneWid].wp += ret;
-            inc_io_count();
+            //inc_io_count();
             write_count += WRITE_BATCH;
         } else {
             off_st ret = pwrite64(
@@ -153,10 +153,11 @@ void ZNSController::write_cluster(int cf, char const *write_buffer,
                 PAGE_SIZE * (cluster_size % WRITE_BATCH), Zone[zoneWid].wp);
             assert(ret == PAGE_SIZE * (cluster_size % WRITE_BATCH));
             Zone[zoneWid].wp += ret;
-            inc_io_count();
+            //inc_io_count();
             write_count += cluster_size % WRITE_BATCH;
         }
     }
+    inc_io_count();
     Zone[zoneWid].wMutex.unlock();
 }
 

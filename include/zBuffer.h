@@ -42,11 +42,11 @@ class BufferManager {
    private:
     libcuckoo::cuckoohash_map<PAGE_ID, std::pair<ACCTIME, ACCTIME>> accessH;
     bool zalp_wc = false, wh_only = false;
-    bool ach_only = false;
+    bool ach_only = true;
     bool zalp = false;
     bool cflru = false;
-    bool lru = true;
-    bool cd_detect = false;
+    bool lru = false;
+    bool cd_detect = true;
     enum WC { cold, warm, hot };
     char *buffer[DEF_BUF_SIZE]{};
     int cd_interval;

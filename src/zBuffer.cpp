@@ -382,13 +382,13 @@ bool BufferManager::ach_clutser(int lv, std::pair<ACCTIME, ACCTIME> acht) {
                 return 0;
             break;
         case 1:
-            if (acht.second - acht.first < 8 * (DEF_BUF_SIZE - WORK_REG_SIZE))
+            if (acht.second - acht.first < 16 * (DEF_BUF_SIZE - WORK_REG_SIZE))
                 return 1;
             else
                 return 0;
             break;
         case 2:
-            if (acht.second - acht.first >= 8 * (DEF_BUF_SIZE - WORK_REG_SIZE))
+            if (acht.second - acht.first >= 16 * (DEF_BUF_SIZE - WORK_REG_SIZE))
                 return 1;
             else
                 return 0;

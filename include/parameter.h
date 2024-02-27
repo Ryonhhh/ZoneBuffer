@@ -1,4 +1,4 @@
-#define ZNS_PATH "/dev/nvme2n2"
+#define ZNS_PATH "/dev/nvme4n2"
 #define LOG_PATH "./log_file"
 
 #define FRAME_SIZE 4096
